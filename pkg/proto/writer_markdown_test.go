@@ -291,8 +291,8 @@ func TestPackageFormatOptions(t *testing.T) {
 			}},
 			wantBody: `## Options
 
-| Name       | Value                                       | Description |
-|------------|---------------------------------------------|-------------|
+| Name       | Value                   | Description |
+|------------|-------------------------|-------------|
 | go_package | gcp/proto/test/location |             |
 
 `,
