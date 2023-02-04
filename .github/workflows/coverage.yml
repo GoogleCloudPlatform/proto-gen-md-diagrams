@@ -1,0 +1,36 @@
+name: Coverage
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - "**/coverage.svg"
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Bazel Setup
+        uses: bazelbuild/setup-bazelisk@v2
+
+      - name: Mount bazel cache
+        uses: actions/cache@v3
+        with:
+          path: "/home/runner/.cache/bazel"
+          key: bazel
+
+      - name: "Coverage"
+        run: bazel test //... && bazel coverage --combined_report=lcov //... && third-party/lcov/bin/genhtml bazel-testlogs/pkg/proto/proto_test/coverage.dat -o ./target/coverage -t "Proto Diagram Tool"
+
+      - name: "Coverage Badge"
+        uses: rrmcguinness/lcov_gh_badges@v1.1.1
+        with:
+          file: ./bazel-testlogs/pkg/proto/proto_test/coverage.dat
+          access_token: ${{ secrets.COVERAGE_SECRET }}
+
