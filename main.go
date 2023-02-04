@@ -23,7 +23,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/rrmcguinness/proto-diagram-tool/pkg/proto"
+	"github.com/GoogleCloudPlatform/proto-gen-md-diagrams/pkg/proto"
 )
 
 var directory *string

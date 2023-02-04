@@ -60,10 +60,10 @@ func TestOptionVisitor_Visit(t *testing.T) {
 		args args
 		want interface{}
 	}{
-		{name: "Visit", args: args{in0: testScanner, in: &Line{Syntax: "option java_package = \"com.github.rrmcguinness.proto.test.location\"", Token: ";"}, in2: "test"},
+		{name: "Visit", args: args{in0: testScanner, in: &Line{Syntax: "option java_package = \"gcp.proto.test.location\"", Token: ";"}, in2: "test"},
 			want: &Option{NamedValue: &NamedValue{
 				Name:  "java_package",
-				Value: "com.github.rrmcguinness.proto.test.location",
+				Value: "gcp.proto.test.location",
 			}}},
 	}
 	for _, tt := range tests {

@@ -21,11 +21,11 @@ Copyright 2022 Google LLC Licensed under the Apache License, Version 2.0 (the "L
 <a name="options"></a>
 ## Options
 
-| Name                | Value                                         | Description     |
-|---------------------|-----------------------------------------------|-----------------|
-| go_package          | "github.com/rrmcguinness/proto/test/location" | Go Lang Options |
-| java_package        | "com.github.rrmcguinness.proto.test.location" | Java Options    |
-| java_multiple_files | true                                          |                 |
+| Name                | Value                     | Description     |
+|---------------------|---------------------------|-----------------|
+| go_package          | "gcp/proto/test/location" | Go Lang Options |
+| java_package        | "gcp.proto.test.location" | Java Options    |
+| java_multiple_files | true                      |                 |
 
 ## Model
 
@@ -131,5 +131,5 @@ Address type is used to identify the type of address.
 
 
 <!-- Created by: Proto Diagram Tool -->
-<!-- https://github.com/rrmcguinness/proto-diagram-tool -->
+<!-- https://github.com/GoogleCloudPlatform/proto-diagram-tool -->
 

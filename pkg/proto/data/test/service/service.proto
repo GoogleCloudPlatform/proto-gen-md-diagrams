@@ -19,10 +19,10 @@ import "google/protobuf/empty.proto";
 import "google/api/annotations.proto";
 
 // Go Lang Options
-option go_package = "github.com/rrmcguinness/proto/test/location";
+option go_package = "gcp/proto/test/location";
 
 // Java Options
-option java_package = "com.github.rrmcguinness.proto.test.location";
+option java_package = "gcp.proto.test.location";
 option java_multiple_files = true;
 
 /*

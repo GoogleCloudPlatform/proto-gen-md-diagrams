@@ -37,7 +37,7 @@ go_library(
         "writer_markdown.go",
         "writer_mermaid.go",
     ],
-    importpath = "github.com/rrmcguinness/proto-diagram-tool/pkg/proto",
+    importpath = "github.com/GoogleCloudPlatform/proto-gen-md-diagrams/pkg/proto",
     visibility = ["//visibility:public"],
 )
 

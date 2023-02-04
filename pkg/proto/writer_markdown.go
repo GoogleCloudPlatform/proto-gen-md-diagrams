@@ -170,7 +170,7 @@ const fqn = "<div style=\"font-size: 12px; margin-top: -10px;\" class=\"fqn\">FQ
 
 const footer = `
 <!-- Created by: Proto Diagram Tool -->
-<!-- https://github.com/rrmcguinness/proto-diagram-tool -->`
+<!-- https://github.com/GoogleCloudPlatform/proto-gen-md-diagrams -->`
 
 func PackageToMarkDown(p *Package, visualize bool) string {
 	out := ""

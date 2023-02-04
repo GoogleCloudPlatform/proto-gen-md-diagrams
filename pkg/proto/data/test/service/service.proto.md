@@ -14,11 +14,11 @@
 
 ## Options
 
-| Name                | Value                                       | Description      |
-|---------------------|---------------------------------------------|------------------|
-| go_package          | github.com/rrmcguinness/proto/test/location | Go Lang Options  |
-| java_package        | com.github.rrmcguinness.proto.test.location | Java Options     |
-| java_multiple_files | true                                        |                  |
+| Name                | Value                   | Description      |
+|---------------------|-------------------------|------------------|
+| go_package          | gcp/proto/test/location | Go Lang Options  |
+| java_package        | gcp.proto.test.location | Java Options     |
+| java_multiple_files | true                    |                  |
 
 
 
@@ -52,5 +52,5 @@ LocationService --o `test.location.PhysicalLocation`
 
 
 <!-- Created by: Proto Diagram Tool -->
-<!-- https://github.com/rrmcguinness/proto-diagram-tool -->
+<!-- https://github.com/GoogleCloudPlatform/proto-diagram-tool -->
 

@@ -1,8 +1,8 @@
-module github.com/rrmcguinness/proto-diagram-tool
+module github.com/GoogleCloudPlatform/proto-gen-md-diagrams
 
 go 1.19
 
-replace github.com/rrmcguinness/proto-diagram-tool/pkg/proto => ./pkg/proto
+replace github.com/GoogleCloudPlatform/proto-gen-md-diagrams => ./pkg/proto
 
 require github.com/stretchr/testify v1.8.1
 

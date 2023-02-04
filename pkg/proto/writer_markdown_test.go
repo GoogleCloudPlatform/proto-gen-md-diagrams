@@ -285,7 +285,7 @@ func TestPackageFormatOptions(t *testing.T) {
 				Comment: "None",
 				Options: []*Option{&Option{NamedValue: &NamedValue{
 					Name:    "go_package",
-					Value:   "github.com/rrmcguinness/proto/test/location",
+					Value:   "gcp/proto/test/location",
 					Comment: "",
 				}}},
 			}},
@@ -293,7 +293,7 @@ func TestPackageFormatOptions(t *testing.T) {
 
 | Name       | Value                                       | Description |
 |------------|---------------------------------------------|-------------|
-| go_package | github.com/rrmcguinness/proto/test/location |             |
+| go_package | gcp/proto/test/location |             |
 
 `,
 		},
@@ -348,7 +348,7 @@ func TestPackageToMarkDown(t *testing.T) {
 
 
 <!-- Created by: Proto Diagram Tool -->
-<!-- https://github.com/rrmcguinness/proto-diagram-tool -->
+<!-- https://github.com/GoogleCloudPlatform/proto-gen-md-diagrams -->
 
 `},
 	}
