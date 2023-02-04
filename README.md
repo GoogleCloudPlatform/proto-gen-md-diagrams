@@ -1,7 +1,7 @@
 # Proto Diagram Tool
 
-![build](https://github.com/rrmcguinness/proto-diagram-tool/actions/workflows/main.yml/badge.svg)
-![coverage](https://github.com/rrmcguinness/proto-diagram-tool/actions/workflows/coverage.yml/badge.svg)
+![build](https://github.com/GoogleCloudPlatform/proto-gen-md-diagrams/actions/workflows/main.yml/badge.svg)
+![coverage](https://github.com/GoogleCloudPlatform/proto-gen-md-diagrams/actions/workflows/coverage.yml/badge.svg)
 ![coverage](coverage.svg)
 
 This utility package is a compiled Go program that reads a protobuf
