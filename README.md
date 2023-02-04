@@ -34,7 +34,7 @@ or open a bug. Please follow the [Contributing](CONTRIBUTING.md) guidelines.
 ## Building
 ```shell
 // Clone
-git clone https://github.com/rrmcguinness/proto-diagram-tool
+git clone https://github.com/GoogleCloudPlaform/proto-gen-md-diagrams
 
 cd proto-diagram-tool
 
