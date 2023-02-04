@@ -25,10 +25,10 @@ or open a bug. Please follow the [Contributing](CONTRIBUTING.md) guidelines.
 ./proto-diagram-tool -d test/protos
 ````
 
-| Input File                                                          | Output File                                                            |
-|---------------------------------------------------------------------|------------------------------------------------------------------------|
-| [Location Protobuf](test/protos/test/location/model.proto)          | [Location Markdown](test/protos/test/location/model.proto.md)          |
-| [Location Service Protobuf](test/protos/test/service/service.proto) | [Location Service Markdown](test/protos/test/service/service.proto.md) |
+| Input File                                                             | Output File                                                               |
+|------------------------------------------------------------------------|---------------------------------------------------------------------------|
+| [Location Protobuf](pkg/proto/data/test/location/model.proto)          | [Location Markdown](pkg/proto/data/test/location/model.proto.md)          |
+| [Location Service Protobuf](pkg/proto/data/test/service/service.proto) | [Location Service Markdown](pkg/proto/data/test/service/service.proto.md) |
 
 
 ## Building
