@@ -43,6 +43,7 @@ go_library(
 
 go_test(
     name = "proto_test",
+    size = "small",
     srcs = [
         "annotation_test.go",
         "attribute_test.go",
