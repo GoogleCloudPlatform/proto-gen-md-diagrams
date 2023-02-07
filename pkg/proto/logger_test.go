@@ -43,7 +43,7 @@ func TestLogger_Debugf(t *testing.T) {
 			name:   "Write Debugf",
 			fields: fields{debug: true},
 			args: args{
-				in:   "Test %s",
+				in:   "Test %s\n",
 				args: []any{"test"},
 			},
 		},
@@ -105,7 +105,7 @@ func TestLogger_Errorf(t *testing.T) {
 			name:   "Test ErrorF",
 			fields: fields{debug: true},
 			args: args{
-				in:   "Test Error: %s",
+				in:   "Test Error: %s\n",
 				args: []any{"error"},
 			},
 		},
@@ -169,7 +169,7 @@ func TestLogger_Infof(t *testing.T) {
 				debug: true,
 			},
 			args: args{
-				in:   "test info f: %s",
+				in:   "test info f: %s\n",
 				args: []any{"test"},
 			},
 		},

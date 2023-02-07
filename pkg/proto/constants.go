@@ -52,5 +52,5 @@ const (
 const (
 	InfoColor  = "\033[1;32mINFO: %s\033[0m"
 	ErrorColor = "\033[1;31mERROR: %s\033[0m"
-	DebugColor = " \033[0;36mDEBUG: %s\033[0m"
+	DebugColor = "\033[1;36mDEBUG: %s\033[0m"
 )
