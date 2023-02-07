@@ -47,8 +47,6 @@ go_binary(
     visibility = ["//visibility:public"],
 )
 
-archive_version = "0.1.0"
-
 archive_base_name = "proto-gen-md-diagrams"
 
 pkg_zip(
@@ -61,10 +59,10 @@ pkg_zip(
     ],
     out = "binary.zip",
     package_file_name = select({
-        "on_linux": "{}-linux-x86_64-{}.zip".format(archive_base_name, archive_version),
-        "on_osx_x64": "{}-darwin-x86_64-{}.zip".format(archive_base_name, archive_version),
-        "on_windows": "{}-windows-x86_64-{}.zip".format(archive_base_name, archive_version),
-        "on_osx_arm64": "{}-darwin-arm.zip-{}".format(archive_base_name, archive_version),
+        "on_linux": "{}-linux-x86_64".format(archive_base_name),
+        "on_osx_x64": "{}-osx-x86_64".format(archive_base_name),
+        "on_windows": "{}-win-x86_64".format(archive_base_name),
+        "on_osx_arm64": "{}-osx-arm64".format(archive_base_name),
     }),
 )
 

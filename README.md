@@ -1,18 +1,17 @@
-# Proto Diagram Tool
+# Proto Gen MD Diagrams
 
 ![build](https://github.com/GoogleCloudPlatform/proto-gen-md-diagrams/actions/workflows/main.yml/badge.svg)
 ![coverage](https://github.com/GoogleCloudPlatform/proto-gen-md-diagrams/actions/workflows/coverage.yml/badge.svg)
 ![coverage](coverage.svg)
 
 This utility package is a compiled Go program that reads a protobuf
-source directory and generates Mermaid Diagrams in PROTO_DIAGRAM.md files
-in each directory.
+source directory and generates Mermaid Diagrams in <protobuf-file-name>.md files
+in each directory, or the output directory with the given tree structure.
 
 > NOTE: Only Proto 3 syntax is supported.
 
 This utility was created to ease documentation generation of complex
-Protobuf Libraries in order to simplify understanding the models and services
-described in a Protobuf.
+Protobuf libraries to visualize models and services described in a Protocol buffers.
 
 If you find this useful, awesome! If you find a bug, please contribute a patch,
 or open a bug. Please follow the [Contributing](CONTRIBUTING.md) guidelines.
@@ -21,11 +20,33 @@ or open a bug. Please follow the [Contributing](CONTRIBUTING.md) guidelines.
 
 ## Test Input and Output
 
-#### Command 
+#### Build and test 
+
+##### Using Native Go
+```shell
+go build && go test ./...
+./proto-gen-md-diarams -d test/protos
+````
+
+##### Using Bazel
+
+Since bazel is CI/CD tool, it compiles for all targets.
 
 ```shell
-./proto-diagram-tool -d test/protos
-````
+bazel build //... && bazel test //...
+
+# Linux 
+bazel-bin/proto-gen-md-diagrams-linux-x86_64
+
+# OS X X64
+proto-gen-md-diagrams-osx-x86_64
+
+# OS X Apple Silicon
+bazel-bin/proto-gen-md-diagrams-osx-arm64
+
+# Windows
+bazel-bin/proto-gen-md-diagrams-win-x86_64
+```
 
 | Input File                                                             | Output File                                                               |
 |------------------------------------------------------------------------|---------------------------------------------------------------------------|
@@ -34,33 +55,32 @@ or open a bug. Please follow the [Contributing](CONTRIBUTING.md) guidelines.
 
 
 ## Building
+
+### Go Lang 
 ```shell
-// Clone
-git clone https://github.com/GoogleCloudPlaform/proto-gen-md-diagrams
-
-cd proto-diagram-tool
-
+cd proto-gen-md-diagrams
 // Build
-go build
+go build && go test ./...
 ```
-
-## CI/CD Pipeline
-The CI/CD Pipeline is run using Bazel and is responsible for building all
-platform build types.
 
 ## Use and Options
 
 ```shell
-./proto-digram -h
+./proto-gen-md-diagrams -h
 
-Usage of ./proto-diagram:
+Usage of ./proto-gen-md-diagrams:
   -d string
-        The directory to read. (default ".")
-  -debug
+        The directoryFlag to read. (default ".")
+  -debugFlag
         Enable debugging
+  -o string
+        Specifies the outputFlag directoryFlag, if not specified, the processor will write markdown in the proto directories. (default ".")
   -r    Read recursively. (default true)
+  -v    Enable Visualization (default true)
+  -w    Enable writing output (default true)
+
   
-./proto-diagram -d test/protos
+./proto-gen-md-diagrams -d test/protos
 ```
 
 ## Quick Example
@@ -122,32 +142,9 @@ message PhysicalLocation {
 }
 ```
 
-### Markdown Output
-```markdown
-## Message: PhysicalLocation
-<div style="font-size: 12px; margin-top: -10px;" class="fqn">FQN: test.location.PhysicalLocation</div>
+## Markdown Output
 
-A physical location that can be described with either an address or a set of geo coordinates.
-
-| Field                   | Ordinal | Type                      | Label    | Description                          |
-|-------------------------|---------|---------------------------|----------|--------------------------------------|
-| address                 | 2       | Address                   |          | The mailing address of the location  |
-| altitude_meters         | 10      | double                    |          | Altitude in Meters                   |
-| created                 | 1       | google.protobuf.Timestamp |          | The timestamp the record was created |
-| latitude_degrees        | 6       | int32                     |          | Longitude Degrees                    |
-| latitude_direction_code | 9       | string                    |          | Latitude Direction Code              |
-| latitude_minutes        | 7       | int32                     |          | Latitude Minutes                     |
-| latitude_seconds        | 8       | int32                     |          | Latitude Seconds                     |
-| longitude_degrees       | 3       | int32                     |          | Longitude degrees                    |
-| longitude_minutes       | 4       | int32                     |          | Longitude Minutes                    |
-| longitude_seconds       | 5       | int32                     |          | Longitude Seconds                    |
-| meta                    | 11      | string, string            | Map      | Additional Meta Data                 |
-| names                   | 12      | string                    | Repeated | Names for the location               |
-
-...
-```
-
-### Mermaid Diagram
+### Diagram
 ```mermaid
 classDiagram
 direction LR
@@ -190,3 +187,24 @@ class AddressType{
   BUSINESS
 }
 ```
+
+## Description
+<div style="font-size: 12px; margin-top: -10px;" class="fqn">FQN: test.location.PhysicalLocation</div>
+
+A physical location that can be described with either an address or a set of geo coordinates.
+
+| Field                   | Ordinal | Type                      | Label    | Description                          |
+|-------------------------|---------|---------------------------|----------|--------------------------------------|
+| address                 | 2       | Address                   |          | The mailing address of the location  |
+| altitude_meters         | 10      | double                    |          | Altitude in Meters                   |
+| created                 | 1       | google.protobuf.Timestamp |          | The timestamp the record was created |
+| latitude_degrees        | 6       | int32                     |          | Longitude Degrees                    |
+| latitude_direction_code | 9       | string                    |          | Latitude Direction Code              |
+| latitude_minutes        | 7       | int32                     |          | Latitude Minutes                     |
+| latitude_seconds        | 8       | int32                     |          | Latitude Seconds                     |
+| longitude_degrees       | 3       | int32                     |          | Longitude degrees                    |
+| longitude_minutes       | 4       | int32                     |          | Longitude Minutes                    |
+| longitude_seconds       | 5       | int32                     |          | Longitude Seconds                    |
+| meta                    | 11      | string, string            | Map      | Additional Meta Data                 |
+| names                   | 12      | string                    | Repeated | Names for the location               |
+
