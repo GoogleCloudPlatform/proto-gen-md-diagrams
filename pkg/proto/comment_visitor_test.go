@@ -33,5 +33,13 @@ func TestCommentVisitor_CanVisit(t *testing.T) {
 }
 
 func TestCommentVisitor_Visit(t *testing.T) {
-
+	l := &Line{Comment: "Test Comment", Token: InlineCommentPrefix}
+	testScanner := NewTestScanner(``)
+	output := commentVisitor.Visit(testScanner, l, "")
+	switch o := output.(type) {
+	case Comment:
+		assert.NotNil(t, o)
+	default:
+		assert.Fail(t, "Did not get a comment back.")
+	}
 }

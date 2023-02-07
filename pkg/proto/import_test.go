@@ -22,6 +22,12 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestConstructor(t *testing.T) {
+	i := Import{Path: "test", Comment: Comment("Test")}
+	assert.NotNil(t, i)
+	assert.Equal(t, "test", i.Path)
+}
+
 func TestNewImport(t *testing.T) {
 	type args struct {
 		path string

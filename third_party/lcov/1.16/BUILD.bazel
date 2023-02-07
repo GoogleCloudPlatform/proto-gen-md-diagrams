@@ -1,0 +1,29 @@
+# Description:
+#   Utilities to help parse coverage data
+load("@rules_license//rules:license.bzl", "license")
+
+package(default_applicable_licenses = ["//third_party/lcov/1.16:LICENSE"])
+
+license(
+    name = "license",
+    license_kinds = [
+        "@rules_license//licenses/spdx:GPL-2.0",
+    ],
+    license_text = "LICENSE",
+)
+
+exports_files([
+    "COPYING",
+    "LICENSE",
+])
+
+exports_files(
+    [
+        "bin/genhtml",
+        "bin/lcov",
+        "bin/geninfo",
+    ],
+    visibility = [
+        "//:__subpackages__",
+    ],
+)

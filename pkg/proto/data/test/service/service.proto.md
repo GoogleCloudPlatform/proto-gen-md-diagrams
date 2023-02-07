@@ -52,5 +52,5 @@ LocationService --o `test.location.PhysicalLocation`
 
 
 <!-- Created by: Proto Diagram Tool -->
-<!-- https://github.com/GoogleCloudPlatform/proto-diagram-tool -->
+<!-- https://github.com/GoogleCloudPlatform/proto-gen-md-diagrams -->
 

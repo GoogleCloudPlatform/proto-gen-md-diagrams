@@ -346,10 +346,8 @@ func TestPackageToMarkDown(t *testing.T) {
 
 
 
-
 <!-- Created by: Proto Diagram Tool -->
 <!-- https://github.com/GoogleCloudPlatform/proto-gen-md-diagrams -->
-
 `},
 	}
 	for _, tt := range tests {

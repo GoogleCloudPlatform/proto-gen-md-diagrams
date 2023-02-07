@@ -26,7 +26,7 @@ jobs:
           key: bazel
 
       - name: "Coverage"
-        run: bazel test //... && bazel coverage --combined_report=lcov //...
+        run: bazel test //... && bazel coverage --combined_report=lcov //... && third_party/lcov/1.16/bin/genhtml bazel-testlogs/pkg/proto/proto_test/coverage.dat -o ./target/coverage -t "Proto Gen MD Diagrams"
 
       - name: "Coverage Badge"
         uses: rrmcguinness/lcov_gh_badges@v1.1.1

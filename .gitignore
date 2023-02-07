@@ -9,7 +9,7 @@
 *.iml
 
 # The program executable
-proto-diagram-tool
+proto-gen-md-diagrams
 
 # Binaries for programs and plugins
 *.exe

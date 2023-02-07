@@ -1,5 +1,22 @@
-load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_cross_binary", "go_library")
+load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
 load("@bazel_gazelle//:def.bzl", "gazelle")
+load("@rules_pkg//:pkg.bzl", "pkg_zip")
+load("@rules_license//rules:license.bzl", "license")
+
+package(
+    default_applicable_licenses = ["//:license"],
+    default_visibility = ["//visibility:public"],
+)
+
+licenses(["notice"])
+
+license(
+    name = "license",
+    license_kinds = [
+        "@rules_license//licenses/spdx:Apache-2.0",
+    ],
+    license_text = "LICENSE",
+)
 
 # gazelle:prefix github.com/GoogleCloudPlatform/proto-gen-md-diagrams
 # gazelle:exclude test/protos/**
@@ -16,7 +33,7 @@ gazelle(
 )
 
 go_library(
-    name = "proto-diagram-tool_lib",
+    name = "proto_gen_md_diagrams_lib",
     srcs = ["main.go"],
     importpath = "github.com/GoogleCloudPlatform/proto-gen-md-diagrams",
     visibility = ["//visibility:private"],
@@ -24,15 +41,61 @@ go_library(
 )
 
 go_binary(
-    name = "proto-diagram-tool",
-    embed = [":proto-diagram-tool_lib"],
+    name = "proto_gen_md_diagrams",
+    basename = "proto-gen-md-diagrams",
+    embed = [":proto_gen_md_diagrams_lib"],
     visibility = ["//visibility:public"],
 )
 
-platform(
-    name = "mac_x64",
+archive_version = "0.1.0"
+
+archive_base_name = "proto-gen-md-diagrams"
+
+pkg_zip(
+    name = "proto_gen_md_diagrams_zip",
+    srcs = [
+        "LICENSE",
+        "NOTICE",
+        "README.md",
+        ":proto_gen_md_diagrams",
+    ],
+    out = "binary.zip",
+    package_file_name = select({
+        "on_linux": "{}-linux-x86_64-{}.zip".format(archive_base_name, archive_version),
+        "on_osx_x64": "{}-darwin-x86_64-{}.zip".format(archive_base_name, archive_version),
+        "on_windows": "{}-windows-x86_64-{}.zip".format(archive_base_name, archive_version),
+        "on_osx_arm": "{}-darwin-arm.zip-{}".format(archive_base_name, archive_version),
+    }),
+)
+
+config_setting(
+    name = "on_linux",
     constraint_values = [
-        "@platforms//os:macos",
+        "@platforms//os:linux",
         "@platforms//cpu:x86_64",
+    ],
+)
+
+config_setting(
+    name = "on_windows",
+    constraint_values = [
+        "@platforms//os:windows",
+        "@platforms//cpu:x86_64",
+    ],
+)
+
+config_setting(
+    name = "on_osx_x64",
+    constraint_values = [
+        "@platforms//os:osx",
+        "@platforms//cpu:x86_64",
+    ],
+)
+
+config_setting(
+    name = "on_osx_arm",
+    constraint_values = [
+        "@platforms//os:osx",
+        "@platforms//cpu:arm",
     ],
 )

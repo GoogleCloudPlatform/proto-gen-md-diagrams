@@ -181,6 +181,6 @@ func PackageToMarkDown(p *Package, visualize bool) string {
 	}
 	out += HandleEnums(p.Enums, visualize)
 	out += HandleMessages(p.Messages, visualize)
-	out = fmt.Sprintf("# Package: %s\n\n%s\n\n%s\n\n%s\n\n%s\n\n%s\n\n", p.Name, p.Comment.ToMarkdownBlockQuote(), PackageFormatImports(p), PackageFormatOptions(p), out, footer)
+	out = fmt.Sprintf("# Package: %s\n\n%s\n\n%s\n\n%s\n\n%s\n%s\n", p.Name, p.Comment.ToMarkdownBlockQuote(), PackageFormatImports(p), PackageFormatOptions(p), out, footer)
 	return out
 }

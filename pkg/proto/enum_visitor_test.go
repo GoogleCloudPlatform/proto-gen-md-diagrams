@@ -39,14 +39,14 @@ func TestEnumVisitor_CanVisit(t *testing.T) {
 			visitors: []Visitor{},
 		}, args: args{in: &Line{
 			Syntax:  "enum AddressType",
-			Token:   "{",
+			Token:   OpenBrace,
 			Comment: "Enum Comment",
 		}}, want: true},
 		{name: "Test Bad Enum", fields: fields{
 			visitors: []Visitor{},
 		}, args: args{in: &Line{
 			Syntax:  "message Address",
-			Token:   "{",
+			Token:   OpenBrace,
 			Comment: "Not an Enum",
 		}}, want: false},
 	}
@@ -71,7 +71,7 @@ func TestEnumVisitor_Visit(t *testing.T) {
 		namespace string
 	}
 
-	scanner := NewTestScanner("enum AddressType {")
+	scanner := NewTestScanner("enum AddressType {\n// Test Comment\nT1 = 0;\n//Test Comment 2\nT2 = 1;\n}")
 
 	tests := []struct {
 		name   string
@@ -86,7 +86,7 @@ func TestEnumVisitor_Visit(t *testing.T) {
 				scanner: scanner,
 				in: &Line{
 					Syntax:  "enum AddressType",
-					Token:   "{",
+					Token:   OpenBrace,
 					Comment: "Address Type",
 				},
 				namespace: "test",
