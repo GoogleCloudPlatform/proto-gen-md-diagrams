@@ -4,6 +4,7 @@ go_library(
     name = "proto",
     srcs = [
         "annotation.go",
+        "app.go",
         "attribute.go",
         "attribute_visitor.go",
         "comment.go",
@@ -50,6 +51,7 @@ go_test(
         "attribute_visitor_test.go",
         "comment_test.go",
         "comment_visitor_test.go",
+        "e2e_test.go",
         "enum_test.go",
         "enum_value_test.go",
         "enum_value_visitor_test.go",
@@ -57,6 +59,7 @@ go_test(
         "import_test.go",
         "import_visitor_test.go",
         "line_test.go",
+        "logger_test.go",
         "markdown_test.go",
         "message_test.go",
         "message_visitor_test.go",
@@ -74,7 +77,7 @@ go_test(
         "util_test.go",
         "writer_markdown_test.go",
     ],
-    data = ["data/input_test_file.txt"],
+    data = glob(["data/**"]),
     embed = [":proto"],
     deps = [
         "@com_github_stretchr_testify//assert",

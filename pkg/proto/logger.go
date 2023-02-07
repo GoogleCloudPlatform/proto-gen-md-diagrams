@@ -18,24 +18,24 @@ package proto
 
 import "fmt"
 
-// Logger is a simplified logger for making the code and output readable.
+// Logger is a simplified logger for making the code and outputFlag readable.
 type Logger struct {
 	debug bool
 }
 
-// Debug prints messages with a DEBUG prefix and only if debug is enabled.
+// Debug prints messages with a DEBUG prefix and only if debugFlag is enabled.
 func (l Logger) Debug(in string) {
 	if l.debug {
 		fmt.Printf(DebugColor, in)
 	}
 }
 
-// Debugf prints a formatted debug string.
+// Debugf prints a formatted debugFlag string.
 func (l Logger) Debugf(in string, args ...any) {
 	l.Debug(fmt.Sprintf(in, args...))
 }
 
-// Error prints a red error output
+// Error prints a red error outputFlag
 func (l Logger) Error(in string) {
 	fmt.Printf(ErrorColor, in)
 }
@@ -45,7 +45,7 @@ func (l Logger) Errorf(in string, args ...any) {
 	l.Error(fmt.Sprintf(in, args...))
 }
 
-// Info prints an information statement to output in teal.
+// Info prints an information statement to outputFlag in teal.
 func (l Logger) Info(in string) {
 	fmt.Printf(InfoColor, in)
 }

@@ -26,7 +26,7 @@ var InvalidImport = errors.New("invalid import")
 // Log is the Package Logger
 var Log = &Logger{}
 
-// SetDebug is used to enable the debug output, useful for troubleshooting.
+// SetDebug is used to enable the debugFlag outputFlag, useful for troubleshooting.
 func SetDebug(debug bool) {
 	Log.debug = debug
 }

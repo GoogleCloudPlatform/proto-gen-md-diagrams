@@ -15,7 +15,7 @@
  */
 
 // Package proto houses all logic for processing protocol buffers into
-// an easy-to-use structure for creating diagrams output. The intention is to
+// an easy-to-use structure for creating diagrams outputFlag. The intention is to
 // support a verity of diagram types such as Mermaid and Plant UML.
 // Since Go does not support logical libraries, these are loaded via direction
 // implementations. ToMermaid() and ToPlantUML(). Please note, since this is
@@ -36,9 +36,9 @@ type Validatable interface {
 type Visitor interface {
 	CanVisit(in *Line) bool
 	Visit(
-			scanner Scanner,
-			in *Line,
-			namespace string) interface{}
+		scanner Scanner,
+		in *Line,
+		namespace string) interface{}
 }
 
 // Scanner is an interface that SHOULD be a Go interface, but is only an
