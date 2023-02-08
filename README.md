@@ -16,8 +16,6 @@ Protobuf libraries to visualize models and services described in a Protocol buff
 If you find this useful, awesome! If you find a bug, please contribute a patch,
 or open a bug. Please follow the [Contributing](CONTRIBUTING.md) guidelines.
 
-> NOTE: In order to use lcov on Apple Silicon, you'll need to install Brew and run `brew install gcovr`.
-
 ## Test Input and Output
 
 #### Build and test 
