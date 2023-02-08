@@ -30,7 +30,7 @@ go build && go test ./...
 
 ##### Using Bazel
 
-Since Bazel is CI/CD platform, it compiles for all targets.
+Since Bazel is CI/CD workflow program it compiles for all targets.
 
 ```shell
 bazel build //... && bazel test //...
