@@ -1,0 +1,80 @@
+module(name = "proto-gen-md-diagrams", version = "0.1.0")
+
+
+bazel_dep(name = "platforms", version = "0.0.6")
+
+# @rules_go.0.38.1
+bazel_dep(name = "rules_go", version = "0.38.1")
+
+go_sdk = use_extension("//go:extensions.bzl", "go_sdk")
+go_sdk.download(
+    name = "go_default_sdk",
+    version = "1.19.4",
+)
+
+# @rules_pkg.0.7.0
+bazel_dep(name = "rules_pkg", version = "0.7.0")
+
+# @rules_license.0.0.3
+bazel_dep(name = "rules_license", version = "0.0.3")
+
+# @gazelle.0.28.0
+bazel_dep(name = "gazelle", version = "0.28.0")
+
+go_deps = use_extension("@gazelle//:extensions.bzl", "go_deps")
+
+go_deps.module(
+    build_file_proto_mode = "disable",
+    path="github.com/davecgh/go-spew",
+    sum="h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=",
+    version="v1.1.1",
+)
+
+go_deps.module(
+    build_file_proto_mode = "disable",
+    path="github.com/pmezard/go-difflib",
+    sum="h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=",
+    version="v1.0.0",
+)
+
+go_deps.module(
+    build_file_proto_mode = "disable",
+    path="github.com/stretchr/objx",
+    sum="h1:1zr/of2m5FGMsad5YfcqgdqdWrIhu+EBEJRhR1U7z/c=",
+    version="v0.5.0",
+)
+
+go_deps.module(
+    build_file_proto_mode = "disable",
+    path="github.com/stretchr/testify",
+    sum="h1:w7B6lhMri9wdJUVmEZPGGhZzrYTPvgJArz7wNPgYKsk=",
+    version="v1.8.1",
+)
+
+go_deps.module(
+    build_file_proto_mode = "disable",
+    path="gopkg.in/check.v1",
+    sum="h1:yhCVgyC4o1eVCa2tZl7eS0r+SDo693bJlVdllGtEeKM=",
+    version="v0.0.0-20161208181325-20d25e280405",
+)
+
+go_deps.module(
+    build_file_proto_mode = "disable",
+    path="gopkg.in/yaml.v3",
+    sum="h1:fxVm/GzAzEWqLHuvctI91KS9hhNmmWOoWu0XTYJS7CA=",
+    version="v3.0.1",
+)
+
+use_repo(
+    go_deps,
+    "com_github_davecgh_go_spew",
+    "com_github_pmezard_go_difflib",
+    "com_github_stretchr_objx",
+    "com_github_stretchr_testify",
+    "in_gopkg_check_v1",
+    "in_gopkg_yaml_v3",
+)
+
+
+
+

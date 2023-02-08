@@ -14,6 +14,6 @@
 
 try-import %workspace%/user.bazelrc
 
-build --java_language_version=11
+build --enable_bzlmod --java_language_version=11
 
-test --java_language_version=11 --test_output=all --cache_test_results=no
+test --enable_bzlmod --java_language_version=11 --test_output=all --cache_test_results=no

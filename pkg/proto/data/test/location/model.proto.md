@@ -150,7 +150,5 @@ class PhoneNumber {
 
 
 
-
 <!-- Created by: Proto Diagram Tool -->
 <!-- https://github.com/GoogleCloudPlatform/proto-gen-md-diagrams -->
-

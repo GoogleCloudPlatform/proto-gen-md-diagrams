@@ -1,5 +1,5 @@
-load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
-load("@bazel_gazelle//:def.bzl", "gazelle")
+load("@rules_go//go:def.bzl", "go_binary", "go_library")
+load("@gazelle//:def.bzl", "gazelle")
 load("@rules_pkg//:pkg.bzl", "pkg_zip")
 load("@rules_license//rules:license.bzl", "license")
 
@@ -33,7 +33,7 @@ gazelle(
 )
 
 go_library(
-    name = "proto_gen_md_diagrams_lib",
+    name = "main_lib",
     srcs = ["main.go"],
     importpath = "github.com/GoogleCloudPlatform/proto-gen-md-diagrams",
     visibility = ["//visibility:private"],
@@ -41,21 +41,21 @@ go_library(
 )
 
 go_binary(
-    name = "proto_gen_md_diagrams",
+    name = "main",
     basename = "proto-gen-md-diagrams",
-    embed = [":proto_gen_md_diagrams_lib"],
+    embed = [":main_lib"],
     visibility = ["//visibility:public"],
 )
 
 archive_base_name = "proto-gen-md-diagrams"
 
 pkg_zip(
-    name = "proto_gen_md_diagrams_zip",
+    name = "main_zip",
     srcs = [
         "LICENSE",
         "NOTICE",
         "README.md",
-        ":proto_gen_md_diagrams",
+        ":main",
     ],
     out = "binary.zip",
     package_file_name = select({
