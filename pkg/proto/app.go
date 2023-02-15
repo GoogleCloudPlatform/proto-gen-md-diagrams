@@ -1,3 +1,8 @@
+// Package proto contains all functions and structures for reading protocol buffers
+// and writing Markdown files with embedded Mermaid class diagrams.
+// The reason this package exists is to provide better automated documentation
+// of Protocol Buffers and to aid in the visualization of complex libraries
+// to enable faster adoption of such models.
 package proto
 
 import (
