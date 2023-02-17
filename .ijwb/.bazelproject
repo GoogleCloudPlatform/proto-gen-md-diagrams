@@ -1,0 +1,9 @@
+directories:
+  .
+  - target
+  - .github
+  - .ijwb
+  - bazel-*
+derive_targets_from_directories: false
+additional_languages:
+  go

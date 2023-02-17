@@ -1,0 +1,10 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "logging",
+    srcs = [
+        "logger.go",
+    ],
+    importpath = "github.com/GoogleCloudPlatform/proto-gen-md-diagrams/pkg/logging",
+    visibility = ["//visibility:public"],
+)

@@ -1,0 +1,18 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_test(
+    name = "test",
+    size = "small",
+    srcs = [
+        "model_reader_test.go",
+        "service_reader_test.go",
+    ],
+    data = glob(["data/**"]),
+    deps = [
+        "//pkg/api",
+        "//pkg/logging",
+        "//pkg/pb",
+        "//pkg/reader",
+        "@com_github_stretchr_testify//assert",
+    ],
+)

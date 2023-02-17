@@ -1,0 +1,18 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "pb",
+    srcs = [
+        "enums.go",
+        "factory.go",
+        "message.go",
+        "package.go",
+        "qualified.go",
+        "service.go",
+    ],
+    importpath = "github.com/GoogleCloudPlatform/proto-gen-md-diagrams/pkg/pb",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//pkg/api",
+    ],
+)

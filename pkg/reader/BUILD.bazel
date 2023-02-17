@@ -1,0 +1,24 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "reader",
+    srcs = [
+        "constants.go",
+        "model.go",
+        "reader_package.go",
+        "scanner.go",
+        "string_util.go",
+        "vis_comment.go",
+        "vis_enum.go",
+        "vis_message.go",
+        "vis_package.go",
+        "vis_service.go",
+    ],
+    importpath = "github.com/GoogleCloudPlatform/proto-gen-md-diagrams/pkg/reader",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//pkg/api",
+        "//pkg/logging",
+        "//pkg/pb",
+    ],
+)

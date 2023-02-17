@@ -22,21 +22,6 @@ license(
 # gazelle:exclude test/protos/**
 gazelle(name = "gazelle")
 
-go_library(
-    name = "main_lib",
-    srcs = ["main.go"],
-    importpath = "github.com/GoogleCloudPlatform/proto-gen-md-diagrams",
-    visibility = ["//visibility:private"],
-    deps = ["//pkg/proto"],
-)
-
-go_binary(
-    name = "main",
-    basename = "proto-gen-md-diagrams",
-    embed = [":main_lib"],
-    visibility = ["//visibility:public"],
-)
-
 archive_base_name = "proto-gen-md-diagrams"
 
 pkg_zip(
@@ -45,7 +30,7 @@ pkg_zip(
         "LICENSE",
         "NOTICE",
         "README.md",
-        ":main",
+        "//cmd",
     ],
     out = "binary.zip",
     package_file_name = select({
