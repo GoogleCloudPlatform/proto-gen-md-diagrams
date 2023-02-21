@@ -37,6 +37,10 @@ func NewLogger(debug bool, source string) *Logger {
 	return &Logger{debug: debug, source: source}
 }
 
+func (l Logger) IsDebug() bool {
+	return l.debug
+}
+
 // Debug prints messages with a DEBUG prefix and only if debugFlag is enabled.
 func (l Logger) Debug(in string) {
 	if l.debug {

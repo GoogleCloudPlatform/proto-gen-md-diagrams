@@ -1,0 +1,16 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "markdown",
+    srcs = [
+        "constants.go",
+        "main.go",
+    ],
+    data = glob(["templates/*.tmpl"]),
+    importpath = "github.com/GoogleCloudPlatform/proto-gen-md-diagrams/pkg/markdown",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//pkg/api",
+        "//pkg/logging",
+    ],
+)

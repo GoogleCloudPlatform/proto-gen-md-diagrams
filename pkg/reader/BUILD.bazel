@@ -12,6 +12,8 @@ go_library(
         "vis_enum.go",
         "vis_message.go",
         "vis_package.go",
+        "vis_rpc.go",
+        "vis_rpc_option.go",
         "vis_service.go",
     ],
     importpath = "github.com/GoogleCloudPlatform/proto-gen-md-diagrams/pkg/reader",

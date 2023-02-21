@@ -1,4 +1,4 @@
-workspace(name = "proto-diagram-tool")
+workspace(name = "proto-gen-md-diagrams")
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
