@@ -1,0 +1,14 @@
+## Messages
+{{ range . }}
+### {{.Name}}
+<span class="qualifier">{{.Qualifier}}</span>
+
+{{.Comment}}
+
+{{ if .Attributes }}{{ template "attribute.tmpl" .Attributes }}{{ end }}
+{{ if .Enums }}{{ template "enum.tmpl" .Enums }}{{ end }}
+{{ if .Messages }}{{ template "message.tmpl" .Messages }}{{ end }}
+
+{{else}}
+> NOTE: No messages defined.
+{{ end }}

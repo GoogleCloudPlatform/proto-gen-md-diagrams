@@ -1,0 +1,10 @@
+{{ if . }}## Enumerations
+{{ range . }}
+### {{.Name}}
+{{ .Comment }}
+| Qualifier | Name | Ordinal | Comment |
+|-----------|------|---------|---------|
+{{ range .Values }}| {{ .Qualifier }} | {{.Name}} | {{.Ordinal}} | {{.Comment}} |
+{{ end }}
+{{ else }}> No enumerations defined{{ end }}
+{{ end }}

@@ -102,6 +102,8 @@ type Package interface {
 
 	Services() []Service
 	AddService(service Service) Package
+
+	GetGraph() Graph
 }
 
 type Message interface {
@@ -118,6 +120,8 @@ type Message interface {
 
 	Reserved() []Reserved
 	AddReserved(start int32, end int32) Message
+
+	GetGraph() Graph
 }
 
 type Annotation interface {
@@ -140,6 +144,7 @@ type Service interface {
 	Qualified
 	RemoteProcedureCalls() []RPC
 	AddRPC(rpc RPC) Service
+	GetGraph() Graph
 }
 
 type Enum interface {
@@ -178,4 +183,21 @@ type RPCParameter interface {
 type RPCOption interface {
 	Qualified
 	Body() string
+}
+
+type Graph interface {
+	AddVertex(v Vertex) error
+	GetVertexByFQN(fqn string) (Vertex, error)
+	GetVertex(vertexType VertexType, name string) (Vertex, error)
+	Contains(v Vertex) bool
+	VertexCount() int
+}
+
+type Vertex interface {
+	FQN() string
+	Type() VertexType
+	Edges() []Vertex
+	Properties() map[string]any
+	EdgeCount() int
+	AddEdge(other Vertex) error
 }

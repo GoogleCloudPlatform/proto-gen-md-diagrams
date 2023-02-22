@@ -28,6 +28,7 @@ func (p ProtobufFactory) NewPackage(path string, name string, comment string) ap
 		messages:  make([]api.Message, 0),
 		enums:     make([]api.Enum, 0),
 		services:  make([]api.Service, 0),
+		graph:     api.NewGraph(),
 	}
 }
 
@@ -38,6 +39,7 @@ func (p ProtobufFactory) NewMessage(qualifier string, name string, comment strin
 		messages:   make([]api.Message, 0),
 		enums:      make([]api.Enum, 0),
 		reserved:   make([]api.Reserved, 0),
+		graph:      api.NewGraph(),
 	}
 }
 
@@ -52,6 +54,7 @@ func (p ProtobufFactory) NewService(qualifier string, name string, comment strin
 	return &service{
 		Qualified:            newQualified(qualifier, name, comment),
 		remoteProcedureCalls: make([]api.RPC, 0),
+		graph:                api.NewGraph(),
 	}
 }
 

@@ -12,7 +12,7 @@ func TestMessageReader(t *testing.T) {
 
 	log := logging.NewLogger(true, "model read test")
 
-	pkg, err := reader.ReadPackage("data/test/location/model.proto", false)
+	pkg, err := reader.ReadPackage("data/api/location/model.proto", false)
 
 	if err != nil {
 		log.Errorf("Error reading file: %v", err)

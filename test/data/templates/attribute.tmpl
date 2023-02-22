@@ -1,0 +1,9 @@
+##### Attributes
+{{ if . }}
+| Name | Ordinal | Repeated | Map | Kinds | Annotations | Comment |
+|------|---------|----------|-----|-------|-------------|---------|
+{{ range . }}| {{.Name}} | {{.Ordinal}} | {{.Repeated}} | {{.Map}} | {{ template "attribute_kind.tmpl" .Kinds }} | {{ template "attribute_annotation.tmpl" .Annotations }} | {{ .Comment }} |
+{{ end }}
+{{ else }}
+> No attributes defined.
+{{ end }}

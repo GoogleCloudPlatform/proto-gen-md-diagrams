@@ -18,6 +18,8 @@ package reader
 
 import (
 	"os"
+	"path/filepath"
+	"strings"
 
 	"github.com/GoogleCloudPlatform/proto-gen-md-diagrams/pkg/api"
 	"github.com/GoogleCloudPlatform/proto-gen-md-diagrams/pkg/logging"
@@ -82,4 +84,26 @@ func ReadPackage(fileName string, debug bool) (api.Package, error) {
 		}
 	}
 	return pkg, err
+}
+
+func ReadAllPackages(dir string, debug bool) (out map[string]api.Package, err error) {
+	log := logging.NewLogger(debug, "read_all_packages")
+	log.Debugf("Reading protobuf directory %s", dir)
+
+	out = make(map[string]api.Package)
+
+	err = filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
+		log.Debugf("-- visiting %s", path)
+		if strings.HasSuffix(path, ".proto") {
+			log.Debugf("Reading protobuf: %s", path)
+			pkg, e := ReadPackage(path, debug)
+			if e != nil {
+				log.Errorf("error reading package: %v", err)
+			} else {
+				out[pkg.Qualifier()] = pkg
+			}
+		}
+		return nil
+	})
+	return out, err
 }

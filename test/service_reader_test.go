@@ -11,7 +11,7 @@ import (
 func TestServiceReader(t *testing.T) {
 
 	log := logging.NewLogger(true, "service read test")
-	pkg, err := reader.ReadPackage("data/test/service/service.proto", false)
+	pkg, err := reader.ReadPackage("data/api/service/service.proto", false)
 
 	if err != nil {
 		log.Errorf("Failed to read service file: %v", err)

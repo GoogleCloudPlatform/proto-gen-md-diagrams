@@ -21,6 +21,7 @@ import "github.com/GoogleCloudPlatform/proto-gen-md-diagrams/pkg/api"
 type service struct {
 	api.Qualified
 	remoteProcedureCalls []api.RPC
+	graph                api.Graph
 }
 
 func (s *service) RemoteProcedureCalls() []api.RPC {
@@ -30,6 +31,10 @@ func (s *service) RemoteProcedureCalls() []api.RPC {
 func (s *service) AddRPC(rpc api.RPC) api.Service {
 	s.remoteProcedureCalls = append(s.remoteProcedureCalls, rpc)
 	return s
+}
+
+func (s *service) GetGraph() api.Graph {
+	return s.graph
 }
 
 // rPC Parameters

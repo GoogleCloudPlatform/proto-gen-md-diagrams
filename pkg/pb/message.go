@@ -16,7 +16,11 @@
 
 package pb
 
-import "github.com/GoogleCloudPlatform/proto-gen-md-diagrams/pkg/api"
+import (
+	"log"
+
+	"github.com/GoogleCloudPlatform/proto-gen-md-diagrams/pkg/api"
+)
 
 type message struct {
 	api.Qualified
@@ -24,10 +28,11 @@ type message struct {
 	messages   []api.Message
 	enums      []api.Enum
 	reserved   []api.Reserved
+	graph      api.Graph
 }
 
 func (m *message) Attributes() []api.Attribute {
-	return m.Attributes()
+	return m.attributes
 }
 
 func (m *message) AddAttribute(attribute api.Attribute) api.Message {
@@ -40,6 +45,10 @@ func (m *message) Messages() []api.Message {
 }
 
 func (m *message) AddMessage(message api.Message) api.Message {
+	err := m.graph.AddVertex(api.NewVertex(message.Name(), api.MESSAGE))
+	if err != nil {
+		log.Default().Printf("error adding message to graph: %v", err)
+	}
 	m.messages = append(m.messages, message)
 	return m
 }
@@ -49,6 +58,10 @@ func (m *message) Enums() []api.Enum {
 }
 
 func (m *message) AddEnum(enum api.Enum) api.Message {
+	err := m.graph.AddVertex(api.NewVertex(enum.Name(), api.ENUM))
+	if err != nil {
+		log.Default().Printf("error adding enum to graph: %v", err)
+	}
 	m.enums = append(m.enums, enum)
 	return m
 }
@@ -60,6 +73,10 @@ func (m *message) Reserved() []api.Reserved {
 func (m *message) AddReserved(start int32, end int32) api.Message {
 	m.reserved = append(m.reserved, &reserved{start: start, end: end})
 	return m
+}
+
+func (m *message) GetGraph() api.Graph {
+	return m.graph
 }
 
 // reserved the default implementation for api.Reserved

@@ -16,7 +16,11 @@
 
 package pb
 
-import "github.com/GoogleCloudPlatform/proto-gen-md-diagrams/pkg/api"
+import (
+	"log"
+
+	"github.com/GoogleCloudPlatform/proto-gen-md-diagrams/pkg/api"
+)
 
 // option an option implementation
 type option struct {
@@ -67,6 +71,14 @@ type _package struct {
 	messages []api.Message
 	enums    []api.Enum
 	services []api.Service
+	graph    api.Graph
+}
+
+func addVertex(pkg api.Package, vertexType api.VertexType, qualified api.Qualified) {
+	err := pkg.GetGraph().AddVertex(api.NewVertex(qualified.Name(), vertexType))
+	if err != nil {
+		log.Default().Printf("failed to add vertex to package: %v", err)
+	}
 }
 
 func (p *_package) Options() []api.Option {
@@ -92,6 +104,7 @@ func (p *_package) Messages() []api.Message {
 }
 
 func (p *_package) AddMessage(message api.Message) api.Package {
+	addVertex(p, api.MESSAGE, message)
 	p.messages = append(p.messages, message)
 	return p
 }
@@ -101,6 +114,7 @@ func (p *_package) Enums() []api.Enum {
 }
 
 func (p *_package) AddEnum(enum api.Enum) api.Package {
+	addVertex(p, api.ENUM, enum)
 	p.enums = append(p.enums, enum)
 	return p
 }
@@ -110,6 +124,11 @@ func (p *_package) Services() []api.Service {
 }
 
 func (p *_package) AddService(service api.Service) api.Package {
+	addVertex(p, api.SERVICE, service)
 	p.services = append(p.services, service)
 	return p
+}
+
+func (p _package) GetGraph() api.Graph {
+	return p.graph
 }

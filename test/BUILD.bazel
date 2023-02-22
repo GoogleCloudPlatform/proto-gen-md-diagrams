@@ -17,7 +17,7 @@ filegroup(
 )
 
 go_test(
-    name = "model_readers",
+    name = "model_test",
     size = "small",
     srcs = [
         "model_reader_test.go",
@@ -34,7 +34,7 @@ go_test(
 )
 
 go_test(
-    name = "markdown_render",
+    name = "markdown_test",
     size = "small",
     srcs = [
         "render_markdown_test.go",
@@ -46,6 +46,15 @@ go_test(
         "//pkg/markdown",
         "//pkg/pb",
         "//pkg/reader",
+        "@com_github_stretchr_testify//assert",
+    ],
+)
+
+go_test(
+    name = "graph_test",
+    srcs = ["graph_test.go"],
+    deps = [
+        "//pkg/api",
         "@com_github_stretchr_testify//assert",
     ],
 )
