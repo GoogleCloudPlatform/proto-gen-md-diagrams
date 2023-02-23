@@ -2,6 +2,8 @@ package mermaid
 
 import (
 	"fmt"
+	"log"
+
 	"github.com/GoogleCloudPlatform/proto-gen-md-diagrams/pkg/api"
 )
 
@@ -14,6 +16,19 @@ func codifyRelationships(root string, vertices []api.Vertex) string {
 		out += fmt.Sprintf("%s --> %s\n", root, v.FQN())
 	}
 	return out
+}
+
+func UnifiedDiagram(p []api.Package) string {
+	g := api.NewGraph()
+	for _, pkg := range p {
+		for _, s := range pkg.GetGraph().Vertices() {
+			err := g.AddVertex(s)
+			if err != nil {
+				log.Default().Printf("Duplicate entry %s", s.FQN())
+			}
+		}
+	}
+	return ""
 }
 
 func ClassDiagram(p api.Package) string {
