@@ -1,29 +1,13 @@
 load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
 
-exports_files(
-    ["data/**"],
-    [
-        "//pkg:__subpackages__",
-        "//test:__subpackages__",
-    ],
-)
-
-filegroup(
-    name = "data",
-    srcs = glob(["data/**/*.proto"]) + glob(["data/**/*.txt"]),
-    visibility = [
-        "//:__subpackages__",
-    ],
-)
-
 go_test(
-    name = "model_test",
+    name = "reader_test",
     size = "small",
     srcs = [
         "model_reader_test.go",
         "service_reader_test.go",
     ],
-    data = glob(["data/**"]),
+    data = ["//test/data:api"],
     deps = [
         "//pkg/api",
         "//pkg/logging",
@@ -39,7 +23,10 @@ go_test(
     srcs = [
         "render_markdown_test.go",
     ],
-    data = glob(["data/**"]),
+    data = [
+        "//test/data:api",
+        "//test/data:templates",
+    ],
     deps = [
         "//pkg/api",
         "//pkg/logging",

@@ -191,6 +191,7 @@ type Graph interface {
 	GetVertex(vertexType VertexType, name string) (Vertex, error)
 	Contains(v Vertex) bool
 	VertexCount() int
+	Vertices() []Vertex
 }
 
 type Vertex interface {

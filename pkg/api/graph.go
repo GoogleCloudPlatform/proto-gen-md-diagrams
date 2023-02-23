@@ -29,23 +29,27 @@ func FQN(vertexType VertexType, name string) string {
 }
 
 func NewGraph() Graph {
-	return &BaseGraph{Vertices: make([]Vertex, 0)}
+	return &BaseGraph{vertices: make([]Vertex, 0)}
 }
 
 type BaseGraph struct {
-	Vertices []Vertex
+	vertices []Vertex
+}
+
+func (g *BaseGraph) Vertices() []Vertex {
+	return g.vertices
 }
 
 func (g *BaseGraph) AddVertex(v Vertex) error {
 	if !g.Contains(v) {
-		g.Vertices = append(g.Vertices, v)
+		g.vertices = append(g.vertices, v)
 		return nil
 	}
 	return VertexExists
 }
 
 func (g *BaseGraph) GetVertexByFQN(fqn string) (Vertex, error) {
-	for _, n := range g.Vertices {
+	for _, n := range g.vertices {
 		if n.FQN() == fqn {
 			return n, nil
 		}
@@ -58,7 +62,7 @@ func (g *BaseGraph) GetVertex(vertexType VertexType, name string) (Vertex, error
 }
 
 func (g *BaseGraph) Contains(v Vertex) bool {
-	for _, n := range g.Vertices {
+	for _, n := range g.vertices {
 		if n.FQN() == v.FQN() {
 			return true
 		}
@@ -67,7 +71,7 @@ func (g *BaseGraph) Contains(v Vertex) bool {
 }
 
 func (g *BaseGraph) VertexCount() int {
-	return len(g.Vertices)
+	return len(g.vertices)
 }
 
 func NewVertex(name string, typ VertexType, edges ...Vertex) Vertex {

@@ -1,0 +1,15 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "mermaid",
+    srcs = [
+        "constants.go",
+        "main.go",
+    ],
+    importpath = "github.com/GoogleCloudPlatform/proto-gen-md-diagrams/pkg/mermaid",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//pkg/api",
+        "//pkg/logging",
+    ],
+)

@@ -1,0 +1,26 @@
+exports_files(
+    glob([
+        "api/**",
+        "templates/**",
+    ]),
+    [
+        "//pkg:__subpackages__",
+        "//test:__subpackages__",
+    ],
+)
+
+filegroup(
+    name = "api",
+    srcs = glob(["api/**/*.proto"]),
+    visibility = [
+        "//:__subpackages__",
+    ],
+)
+
+filegroup(
+    name = "templates",
+    srcs = glob(["templates/*.tmpl"]),
+    visibility = [
+        "//:__subpackages__",
+    ],
+)
