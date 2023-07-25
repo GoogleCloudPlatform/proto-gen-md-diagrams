@@ -23,6 +23,7 @@ const (
 	PrefixRepeated = "repeated"
 	PrefixMap      = "map"
 	PrefixReserved = "reserved"
+	PrefixOptional = "optional"
 
 	SpaceRemovalRegex = `\s+`
 	Period            = "."

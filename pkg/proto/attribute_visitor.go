@@ -31,10 +31,11 @@ type AttributeVisitor struct {
 }
 
 // CanVisit - Determines if the line is an attribute, it doesn't end in a brace,
-// it's a map, repeated, or can effectively be split
+// it's a map, repeated, optional, or can effectively be split
 func (av *AttributeVisitor) CanVisit(in *Line) bool {
 	return (!strings.HasSuffix(in.Syntax, OpenBrace) || !strings.HasSuffix(in.Syntax, CloseBrace)) &&
 			strings.HasPrefix(in.Syntax, "repeated") ||
+			strings.HasPrefix(in.Syntax, "optional") ||
 			strings.HasPrefix(in.Syntax, "map") || len(in.SplitSyntax()) >= 4
 }
 
@@ -43,6 +44,16 @@ func HandleRepeated(out *Attribute, split []string) {
 	Log.Debugf("\t processing repeated attribute %s", split[2])
 	// 0 - 4 repeated, type, name, equals, ordinal
 	out.Repeated = true
+	out.Kind = append(out.Kind, split[1])
+	out.Name = split[2]
+	out.Ordinal = ParseOrdinal(split[4])
+}
+
+// HandleOptional marshals the attribute into an optional representation
+func HandleOptional(out *Attribute, split []string) {
+	Log.Debugf("\t processing optional attribute %s", split[2])
+	// 0 - 4 repeated, type, name, equals, ordinal
+	out.Optional = true
 	out.Kind = append(out.Kind, split[1])
 	out.Name = split[2]
 	out.Ordinal = ParseOrdinal(split[4])
@@ -85,6 +96,8 @@ func (av *AttributeVisitor) Visit(_ Scanner, in *Line, namespace string) interfa
 		HandleRepeated(out, split)
 	} else if strings.HasPrefix(in.Syntax, PrefixMap) {
 		HandleMap(out, split)
+	} else if strings.HasPrefix(in.Syntax, PrefixOptional) {
+		HandleOptional(out, split)
 	} else {
 		HandleDefaultAttribute(out, split)
 	}

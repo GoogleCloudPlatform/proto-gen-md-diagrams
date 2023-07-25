@@ -20,6 +20,7 @@ package proto
 type Attribute struct {
 	*Qualified
 	Repeated    bool
+	Optional    bool
 	Map         bool
 	Kind        []string
 	Ordinal     int
@@ -34,9 +35,11 @@ func (a *Attribute) IsValid() bool {
 // ToMermaid implements a Mermaid Syntax per Attribute
 func (a *Attribute) ToMermaid() string {
 	if a.Repeated {
-		return Join("", "+ List<", a.Kind[0], "> ", a.Name)
+		return Join("", "+ List~", a.Kind[0], "~ ", a.Name)
 	} else if a.Map {
-		return Join("", "+ Map<", a.Kind[0], ", ", a.Kind[1], "> ", a.Name)
+		return Join("", "+ Map~", a.Kind[0], ", ", a.Kind[1], "~ ", a.Name)
+	} else if a.Optional {
+		return Join("", "+ Optional~", a.Kind[0], "~ ", a.Name)
 	}
 	return Join(Space, "+", a.Kind[0], a.Name)
 }
