@@ -72,6 +72,8 @@ func MessageToMarkdown(message *Message, visualize bool) (body string, diagram s
 			label = "Map"
 		} else if a.Repeated {
 			label = "Repeated"
+		} else if a.Optional {
+		    label = "Optional"
 		}
 		attributeTable.Insert(a.Name, strconv.Itoa(a.Ordinal), strings.Join(a.Kind, Comma), label, a.Comment.ToMarkdownText())
 	}
