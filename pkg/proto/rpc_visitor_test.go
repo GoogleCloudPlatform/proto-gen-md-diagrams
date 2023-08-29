@@ -85,18 +85,9 @@ func TestRpcVisitor_Visit(t *testing.T) {
 		RpcLineMarcher *regexp.Regexp
 	}
 	type args struct {
-		scanner   Scanner
 		in        *Line
 		namespace string
 	}
-
-	testScanner := NewTestScanner(`
-      // Creates the get location
-      option (google.api.http) = {
-        get: "/locations"
-      };
-  }
-`)
 
 	tests := []struct {
 		name   string
@@ -111,7 +102,6 @@ func TestRpcVisitor_Visit(t *testing.T) {
 				RpcLineMarcher: regexp.MustCompile(RpcLinePattern),
 			},
 			args: args{
-				scanner: testScanner,
 				in: &Line{
 					Syntax:  "rpc List(google.protobuf.Empty) returns (stream test.location.PhysicalLocation)",
 					Token:   OpenBrace,
@@ -130,6 +120,31 @@ func TestRpcVisitor_Visit(t *testing.T) {
 				Options:          []*RpcOption{NewRpcOption("test.LocationService.List", "google.api.http", "", "}")},
 			},
 		},
+		{
+			name: "Visit",
+			fields: fields{
+				Visitors:       []Visitor{},
+				RpcLineMarcher: regexp.MustCompile(RpcLinePattern),
+			},
+			args: args{
+				in: &Line{
+					Syntax:  "rpc List(google.protobuf.Empty) returns (test.location.PhysicalLocation)",
+					Token:   OpenBrace,
+					Comment: "List returns a list of physical locations",
+				},
+				namespace: "test.LocationService",
+			},
+			want: &Rpc{
+				Qualified: &Qualified{
+					Qualifier: "test.LocationService",
+					Name:      "List",
+					Comment:   "List returns a list of physical locations",
+				},
+				InputParameters:  []*Parameter{NewParameter(false, "google.protobuf.Empty")},
+				ReturnParameters: []*Parameter{NewParameter(false, "test.location.PhysicalLocation")},
+				Options:          []*RpcOption{NewRpcOption("test.LocationService.List", "google.api.http", "", "}")},
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -137,7 +152,14 @@ func TestRpcVisitor_Visit(t *testing.T) {
 				Visitors:       tt.fields.Visitors,
 				RpcLineMatcher: tt.fields.RpcLineMarcher,
 			}
-			assert.Equalf(t, tt.want, rv.Visit(tt.args.scanner, tt.args.in, tt.args.namespace), "Visit(%v, %v, %v)", tt.args.scanner, tt.args.in, tt.args.namespace)
+			testScanner := NewTestScanner(`
+					// Creates the get location
+					option (google.api.http) = {
+						get: "/locations"
+					};
+			}
+`)
+			assert.Equalf(t, tt.want, rv.Visit(testScanner, tt.args.in, tt.args.namespace), "Visit(%v, %v, %v)", testScanner, tt.args.in, tt.args.namespace)
 		})
 	}
 }

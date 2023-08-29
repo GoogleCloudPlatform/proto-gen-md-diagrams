@@ -53,7 +53,7 @@ func ParseReturnArgs(values []string, rpc *Rpc) {
 		if strings.HasPrefix(i, "stream") {
 			rpc.AddReturnParameter(NewParameter(true, strings.TrimSpace(i[strings.Index(i, Space):])))
 		} else {
-			rpc.AddReturnParameter(NewParameter(true, strings.TrimSpace(i)))
+			rpc.AddReturnParameter(NewParameter(false, strings.TrimSpace(i)))
 		}
 	}
 }
