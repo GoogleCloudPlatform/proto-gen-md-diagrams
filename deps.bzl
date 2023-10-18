@@ -1,6 +1,7 @@
 load("@gazelle//:deps.bzl", "go_repository")
 
 def go_dependencies():
+""" The auto generated dependencies from go.mod """
     go_repository(
         name = "com_github_davecgh_go_spew",
         importpath = "github.com/davecgh/go-spew",
