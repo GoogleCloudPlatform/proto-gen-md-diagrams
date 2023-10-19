@@ -1,4 +1,4 @@
-load("@gazelle//:deps.bzl", "go_repository")
+load("@bazel_gazelle//:deps.bzl", "go_repository")
 
 def go_dependencies():
     go_repository(
