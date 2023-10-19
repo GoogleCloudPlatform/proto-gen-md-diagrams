@@ -29,7 +29,7 @@ jobs:
         run: bazel test //... && bazel coverage --combined_report=lcov //... && third_party/lcov/1.16/bin/genhtml bazel-testlogs/pkg/proto/proto_test/coverage.dat -o ./target/coverage -t "Proto Gen MD Diagrams"
 
       - name: "Coverage Badge"
-        uses: GoogleCloudPlatform/lcov-coverage-badge@v1.0.0
+        uses: GoogleCloudPlatform/lcov-coverage-badge@v1.0.1
         with:
           file: ./bazel-testlogs/pkg/proto/proto_test/coverage.dat
           access_token: ${{ secrets.COVERAGE_SECRET }}
