@@ -1,0 +1,110 @@
+#!/usr/bin/env perl
+
+#   Copyright (c) MediaTek USA Inc., 2020-2022
+#
+#   This program is free software;  you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 2 of the License, or (at
+#   your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful, but
+#   WITHOUT ANY WARRANTY;  without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+#   General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program;  if not, see
+#   <http://www.gnu.org/licenses/>.
+#
+#
+# gitblame [domain]
+#
+#   This script runs "git blame" for the specified file and formats the result
+#   to match the diffcov(1) age/ownership annotation specification.
+#
+# By default, it strips the domain from each author's email address.
+# If passed a domain name (or domain regexp) - then it strips that domain
+# from the author's address, and treats all users outside the matching domain
+# as "External".
+
+#use strict;
+use POSIX qw(strftime);
+use File::Basename qw(dirname basename);
+use File::Spec;
+
+die("usage: $0 [domain] file_path")
+    unless 0 < scalar(@ARGV) && scalar(@ARGV) < 3;
+my $pathname        = $ARGV[-1];
+my $internal_domain = $ARGV[0] if 2 == scalar(@ARGV);
+
+die("$0 expected readable file, found '" .
+    (defined($pathname) ? $pathname : '<undef>') . "'")
+    unless defined($pathname) && (-f $pathname || -l $pathname) && -r $pathname;
+
+# set working directory to account for nested repos and submodules
+my $dirname  = dirname($pathname);
+my $basename = basename($pathname);
+chdir($dirname) or die("unable to 'cd $dirname': $!");
+
+my $null = File::Spec->devnull();
+if (0 == system("git rev-parse --show-toplevel >$null 2>&1")) {
+    # in a git repo
+    if (0 == system("git ls-files --error-unmatch $basename >$null 2>&1")) {
+        # matched a tracked pathname
+        if (open(HANDLE, "-|", "git blame -e $basename")) {
+            while (my $line = <HANDLE>) {
+                chomp $line;
+                # Also remove CR from line-end
+                s/\015$//;
+
+                if ($line =~
+                    m/(\S+)\s+\(<([^>]+)>\s+([-0-9]+\s+[0-9:]+\s+[-+0-9]+)\s+([0-9]+)\) (.*)/
+                ) {
+                    my $commit = $1;
+                    my $owner  = $2;
+                    my $when   = $3;
+                    my $text   = $5;
+
+                    # line owner filtering to canonical form
+                    $owner =~ s/ dot /./g;
+                    $owner =~ s/ at /\@/;
+
+                    if ($internal_domain) {
+                        ## strip domain part for internal users...
+                        $owner =~ s/\@$internal_domain//;
+                        # replace everybody else with "External"
+                        $owner =~ s/.*\@.*/External/;
+                    }
+                    # else leave domain in place
+
+                    # Convert Git date/time to diffcov canonical format
+                    # replace space between date and time with 'T'
+                    $when =~ s/\s/T/;
+                    # remove space between time and zone offset
+                    $when =~ s/\s//;
+                    # insert ':' between hour and minute digits of zone offset
+                    $when =~ s/([0-9][0-9])$/:$1/;
+                    printf("%s|%s|%s|%s\n", $commit, $owner, $when, $text);
+                } else {
+                    printf("%s|%s|%s|%s\n", "NONE", "NONE", "NONE", $line);
+                }
+            }
+            exit(0);
+        }
+    }
+}
+
+# fallthrough from error conditions
+
+my @stat = stat $basename;
+my $tz   = strftime("%z", localtime($stat[9]));
+$tz =~ s/([0-9][0-9])$/:\1/;
+my $mtime = strftime("%Y-%m-%dT%H:%M:%S", localtime($stat[9])) . $tz;
+open(HANDLE, $basename) or die("unsable to open $basename: $!");
+while (my $line = <HANDLE>) {
+    chomp $line;
+    # Also remove CR from line-end
+    s/\015$//;
+
+    printf("%s|%s|%s|%s\n", "NONE", "NONE", $mtime, $line);
+}
