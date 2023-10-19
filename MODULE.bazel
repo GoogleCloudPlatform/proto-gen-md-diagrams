@@ -5,25 +5,25 @@ module(name = "proto-gen-md-diagrams", version = "0.1.0")
 # https://github.com/bazelbuild/rules_go/blob/master/MODULE.bazel
 
 # Add Go Rules
-bazel_dep(name = "rules_go", version = "0.38.1", repo_name = "io_bazel_rules_go")
+bazel_dep(name = "rules_go", version = "0.42.0", repo_name = "io_bazel_rules_go")
 
 # Override the default Go Version
 go_sdk = use_extension("@io_bazel_rules_go//go:extensions.bzl", "go_sdk")
 
 go_sdk.download(
     name = "go_override_sdk",
-    version = "1.20",
+    version = "1.21.3",
 )
 use_repo(go_sdk, "go_override_sdk_toolchains")
 register_toolchains("@go_override_sdk_toolchains//:all")
 
 # Register Gazelle
-bazel_dep(name = "gazelle", version = "0.28.0")
+bazel_dep(name = "gazelle", version = "0.33.0")
 
 # Add all other dependencies
-bazel_dep(name = "rules_pkg", version = "0.7.0")
-bazel_dep(name = "rules_license", version = "0.0.3")
-bazel_dep(name = "platforms", version = "0.0.6")
+bazel_dep(name = "rules_pkg", version = "0.9.1")
+bazel_dep(name = "rules_license", version = "0.0.7")
+bazel_dep(name = "platforms", version = "0.0.8")
 
 
 ## Load Go Dependencies
@@ -40,7 +40,3 @@ use_repo(
     "com_github_stretchr_testify",
     "in_gopkg_yaml_v3",
 )
-
-
-
-
