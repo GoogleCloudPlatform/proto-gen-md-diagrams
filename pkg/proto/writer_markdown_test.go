@@ -60,6 +60,34 @@ func TestEnumToMarkdown(t *testing.T) {
 
 
 `, wantDiagram: ``},
+		{name: "Enum Markdown", args: args{
+			enum: &Enum{
+				Qualified: &Qualified{
+					Qualifier: "test.TestEnum",
+					Name:      "TestEnum",
+					Comment:   "Keen Enum",
+				},
+				Values: []*EnumValue{
+					NewEnumValue("test.TestEnum", "0", "T_01", ""),
+					NewEnumValue("test.TestEnum", "1", "T_02", ""),
+				},
+			},
+			wc: &WriterConfig{
+				visualize:    false,
+				pureMarkdown: true,
+			},
+		}, wantBody: `## Enum: TestEnum
+* **FQN**: test.TestEnum
+
+Keen Enum 
+
+| Name | Ordinal | Description |
+|------|---------|-------------|
+| T_01 | 0       |             |
+| T_02 | 1       |             |
+
+
+`, wantDiagram: ``},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -123,6 +151,30 @@ func TestHandleEnums(t *testing.T) {
 
 
 `},
+		{name: "Enums", args: args{
+			enums: []*Enum{{
+				Qualified: &Qualified{
+					Qualifier: "test.Service",
+					Name:      "TestEnum",
+					Comment:   "",
+				},
+				Values: []*EnumValue{NewEnumValue("test.Service.TestEnum", "0", "T1", "")},
+			}},
+			wc: &WriterConfig{
+				visualize:    false,
+				pureMarkdown: true,
+			},
+		}, wantBody: `## Enum: TestEnum
+* **FQN**: test.Service
+
+ 
+
+| Name | Ordinal | Description |
+|------|---------|-------------|
+| T1   | 0       |             |
+
+
+`},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -171,6 +223,44 @@ func TestHandleMessages(t *testing.T) {
 <div style="font-size: 12px; margin-top: -10px;" class="fqn">FQN: test.Service.Message</div>
 
 <div class="comment"><span></span><br/></div>
+
+| Field | Ordinal | Type   | Label | Description |
+|-------|---------|--------|-------|-------------|
+| Name  | 1       | string |       |             |
+
+
+`},
+		{name: "Handle Message", args: args{
+			messages: []*Message{&Message{
+				Qualified: &Qualified{
+					Qualifier: "test.Service.Message",
+					Name:      "Message",
+					Comment:   "",
+				},
+				Attributes: []*Attribute{{
+					Qualified: &Qualified{
+						Qualifier: "test.Service.Message.Name",
+						Name:      "Name",
+						Comment:   "",
+					},
+					Repeated:    false,
+					Map:         false,
+					Kind:        []string{"string"},
+					Ordinal:     1,
+					Annotations: []*Annotation{},
+				}},
+				Messages: []*Message{},
+				Enums:    []*Enum{},
+				Reserved: []*Reserved{},
+			}},
+			wc: &WriterConfig{
+				visualize:    false,
+				pureMarkdown: true,
+			},
+		}, wantBody: `## Message: Message
+* **FQN**: test.Service.Message
+
+ 
 
 | Field | Ordinal | Type   | Label | Description |
 |-------|---------|--------|-------|-------------|
@@ -227,6 +317,44 @@ func TestMessageToMarkdown(t *testing.T) {
 <div style="font-size: 12px; margin-top: -10px;" class="fqn">FQN: test.Service.Message</div>
 
 <div class="comment"><span></span><br/></div>
+
+| Field | Ordinal | Type   | Label | Description |
+|-------|---------|--------|-------|-------------|
+| Name  | 1       | string |       |             |
+
+
+`, wantDiagram: "\n### Message Diagram\n\n```mermaid\nclassDiagram\ndirection LR\n\n%% \n\nclass Message {\n  + string Name\n}\n\n```"},
+		{name: "Handle Message", args: args{
+			message: &Message{
+				Qualified: &Qualified{
+					Qualifier: "test.Service.Message",
+					Name:      "Message",
+					Comment:   "",
+				},
+				Attributes: []*Attribute{{
+					Qualified: &Qualified{
+						Qualifier: "test.Service.Message.Name",
+						Name:      "Name",
+						Comment:   "",
+					},
+					Repeated:    false,
+					Map:         false,
+					Kind:        []string{"string"},
+					Ordinal:     1,
+					Annotations: []*Annotation{},
+				}},
+				Messages: []*Message{},
+				Enums:    []*Enum{},
+				Reserved: []*Reserved{},
+			},
+			wc: &WriterConfig{
+				visualize:    true,
+				pureMarkdown: true,
+			},
+		}, wantBody: `## Message: Message
+* **FQN**: test.Service.Message
+
+ 
 
 | Field | Ordinal | Type   | Label | Description |
 |-------|---------|--------|-------|-------------|
@@ -358,6 +486,43 @@ func TestPackageToMarkDown(t *testing.T) {
 <!-- Created by: Proto Diagram Tool -->
 <!-- https://github.com/GoogleCloudPlatform/proto-gen-md-diagrams -->
 `},
+		{name: "Package", args: args{
+			p: &Package{
+				Path:     "test/location/model.proto",
+				Name:     "test.package",
+				Comment:  "",
+				Options:  []*Option{},
+				Imports:  []*Import{},
+				Messages: []*Message{},
+				Enums:    []*Enum{},
+				Services: []*Service{},
+			},
+			wc: &WriterConfig{
+				pureMarkdown: true,
+			},
+		}, want: `# Package: test.package
+
+ 
+
+## Imports
+
+| Import | Description |
+|--------|-------------|
+
+
+
+## Options
+
+| Name | Value | Description |
+|------|-------|-------------|
+
+
+
+
+
+<!-- Created by: Proto Diagram Tool -->
+<!-- https://github.com/GoogleCloudPlatform/proto-gen-md-diagrams -->
+`},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -387,6 +552,25 @@ func TestServiceToMarkdown(t *testing.T) {
 <div style="font-size: 12px; margin-top: -10px;" class="fqn">FQN: test.Service</div>
 
 <div class="comment"><span></span><br/></div>
+
+| Method | Parameter (In) | Parameter (Out) | Description |
+|--------|----------------|-----------------|-------------|
+
+
+`},
+		{name: "Service", args: args{s: &Service{
+			Qualified: &Qualified{
+				Qualifier: "test.Service",
+				Name:      "Service",
+				Comment:   "",
+			},
+			Methods: []*Rpc{},
+		}, wc: &WriterConfig{
+			pureMarkdown: true,
+		}}, want: `## Service: Service
+* **FQN**: test.Service
+
+ 
 
 | Method | Parameter (In) | Parameter (Out) | Description |
 |--------|----------------|-----------------|-------------|

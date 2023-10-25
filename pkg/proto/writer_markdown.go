@@ -58,7 +58,11 @@ func EnumToMarkdown(enum *Enum, wc *WriterConfig) (body string, diagram string) 
 	if wc.visualize {
 		diagram = "\n" + ToMermaid(enum.Name, enum)
 	}
-	body = fmt.Sprintf("## Enum: %s\n%s\n\n%s\n\n%s\n\n", enum.Name, fmt.Sprintf(fqn, enum.Qualifier), enum.Comment.ToMarkdownBlockQuote(), enumTable.String())
+	if wc.pureMarkdown {
+		body = fmt.Sprintf("## Enum: %s\n%s\n\n%s\n\n%s\n\n", enum.Name, fmt.Sprintf(fqnPureMd, enum.Qualifier), enum.Comment.ToMarkdownText(), enumTable.String())
+	} else {
+		body = fmt.Sprintf("## Enum: %s\n%s\n\n%s\n\n%s\n\n", enum.Name, fmt.Sprintf(fqn, enum.Qualifier), enum.Comment.ToMarkdownBlockQuote(), enumTable.String())
+	}
 	return body, diagram
 }
 
@@ -87,8 +91,11 @@ func MessageToMarkdown(message *Message, wc *WriterConfig) (body string, diagram
 		diagram = "\n" + ToMermaid(message.Name, message)
 	}
 
-	body = fmt.Sprintf("## Message: %s\n%s\n\n%s\n\n%s\n\n", message.Name, fmt.Sprintf(fqn, message.Qualifier), message.Comment.ToMarkdownBlockQuote(), attributeTable.String())
-
+	if wc.pureMarkdown {
+		body = fmt.Sprintf("## Message: %s\n%s\n\n%s\n\n%s\n\n", message.Name, fmt.Sprintf(fqnPureMd, message.Qualifier), message.Comment.ToMarkdownText(), attributeTable.String())
+	} else {
+		body = fmt.Sprintf("## Message: %s\n%s\n\n%s\n\n%s\n\n", message.Name, fmt.Sprintf(fqn, message.Qualifier), message.Comment.ToMarkdownBlockQuote(), attributeTable.String())
+	}
 	for _, e := range message.Enums {
 		eBody, eDiagram := EnumToMarkdown(e, wc)
 		body += eBody
@@ -122,6 +129,9 @@ func ServiceToMarkdown(s *Service, wc *WriterConfig) string {
 		table = ToMermaid(s.Name, s) + "\n\n" + table
 	}
 
+	if wc.pureMarkdown {
+		return fmt.Sprintf("## Service: %s\n%s\n\n%s\n\n%s\n\n", s.Name, fmt.Sprintf(fqnPureMd, s.Qualifier), s.Comment.ToMarkdownText(), table)
+	}
 	return fmt.Sprintf("## Service: %s\n%s\n\n%s\n\n%s\n\n", s.Name, fmt.Sprintf(fqn, s.Qualifier), s.Comment.ToMarkdownBlockQuote(), table)
 }
 
@@ -175,6 +185,8 @@ func PackageFormatOptions(p *Package) (body string) {
 
 const fqn = "<div style=\"font-size: 12px; margin-top: -10px;\" class=\"fqn\">FQN: %s</div>"
 
+const fqnPureMd = "* **FQN**: %s"
+
 const footer = `
 <!-- Created by: Proto Diagram Tool -->
 <!-- https://github.com/GoogleCloudPlatform/proto-gen-md-diagrams -->`
@@ -188,6 +200,10 @@ func PackageToMarkDown(p *Package, wc *WriterConfig) string {
 	}
 	out += HandleEnums(p.Enums, wc)
 	out += HandleMessages(p.Messages, wc)
-	out = fmt.Sprintf("# Package: %s\n\n%s\n\n%s\n\n%s\n\n%s\n%s\n", p.Name, p.Comment.ToMarkdownBlockQuote(), PackageFormatImports(p), PackageFormatOptions(p), out, footer)
+	if wc.pureMarkdown {
+		out = fmt.Sprintf("# Package: %s\n\n%s\n\n%s\n\n%s\n\n%s\n%s\n", p.Name, p.Comment.ToMarkdownText(), PackageFormatImports(p), PackageFormatOptions(p), out, footer)
+	} else {
+		out = fmt.Sprintf("# Package: %s\n\n%s\n\n%s\n\n%s\n\n%s\n%s\n", p.Name, p.Comment.ToMarkdownBlockQuote(), PackageFormatImports(p), PackageFormatOptions(p), out, footer)
+	}
 	return out
 }
