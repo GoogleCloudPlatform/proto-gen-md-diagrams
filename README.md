@@ -77,6 +77,7 @@ Usage of ./proto-gen-md-diagrams:
   -r    Read recursively. (default true)
   -v    Enable Visualization (default true)
   -w    Enable writing output (default true)
+  -md   Enable pure MD output (default false)
 
   
 ./proto-gen-md-diagrams -d test/protos
