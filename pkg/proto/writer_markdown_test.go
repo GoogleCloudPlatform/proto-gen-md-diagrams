@@ -77,7 +77,8 @@ func TestEnumToMarkdown(t *testing.T) {
 				pureMarkdown: true,
 			},
 		}, wantBody: `## Enum: TestEnum
-* **FQN**: test.TestEnum
+
+**FQN**: test.TestEnum
 
 Keen Enum
 
@@ -166,7 +167,8 @@ func TestHandleEnums(t *testing.T) {
 				pureMarkdown: true,
 			},
 		}, wantBody: `## Enum: TestEnum
-* **FQN**: test.Service
+
+**FQN**: test.Service
 
 
 
@@ -260,7 +262,8 @@ func TestHandleMessages(t *testing.T) {
 				pureMarkdown: true,
 			},
 		}, wantBody: `## Message: Message
-* **FQN**: test.Service.Message
+
+**FQN**: test.Service.Message
 
 
 
@@ -355,7 +358,8 @@ func TestMessageToMarkdown(t *testing.T) {
 				pureMarkdown: true,
 			},
 		}, wantBody: `## Message: Message
-* **FQN**: test.Service.Message
+
+**FQN**: test.Service.Message
 
 
 
@@ -573,7 +577,8 @@ func TestServiceToMarkdown(t *testing.T) {
 		}, wc: &WriterConfig{
 			pureMarkdown: true,
 		}}, want: `## Service: Service
-* **FQN**: test.Service
+
+**FQN**: test.Service
 
 
 
