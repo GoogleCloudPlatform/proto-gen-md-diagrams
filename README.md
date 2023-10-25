@@ -18,15 +18,16 @@ or open a bug. Please follow the [Contributing](CONTRIBUTING.md) guidelines.
 
 ## Test Input and Output
 
-#### Build and test 
+### Build and test
 
-##### Using Native Go
+#### Using Native Go
+
 ```shell
 go build && go test ./...
-./proto-gen-md-diarams -d test/protos
-````
+./proto-gen-md-diagrams -d ./pkg/proto/data/test/
+```
 
-##### Using Bazel
+#### Using Bazel
 
 Since Bazel is CI/CD workflow program it compiles for all targets.
 
@@ -51,10 +52,10 @@ bazel-bin/proto-gen-md-diagrams-win-x86_64
 | [Location Protobuf](pkg/proto/data/test/location/model.proto)          | [Location Markdown](pkg/proto/data/test/location/model.proto.md)          |
 | [Location Service Protobuf](pkg/proto/data/test/service/service.proto) | [Location Service Markdown](pkg/proto/data/test/service/service.proto.md) |
 
-
 ## Building
 
-### Go Lang 
+### Go Lang
+
 ```shell
 cd proto-gen-md-diagrams
 // Build
@@ -143,6 +144,7 @@ message PhysicalLocation {
 ## Markdown Output
 
 ### Diagram
+
 ```mermaid
 classDiagram
 direction LR
@@ -187,6 +189,7 @@ class AddressType{
 ```
 
 ## Description
+
 <div style="font-size: 12px; margin-top: -10px;" class="fqn">FQN: test.location.PhysicalLocation</div>
 
 A physical location that can be described with either an address or a set of geo coordinates.
