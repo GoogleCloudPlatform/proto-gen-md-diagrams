@@ -51,7 +51,7 @@ func EnumToMarkdown(enum *Enum, wc *WriterConfig) (body string, diagram string) 
 	enumTable := NewMarkdownTable()
 	enumTable.AddHeader("Name", "Ordinal", "Description")
 	for _, v := range enum.Values {
-		enumTable.Insert(v.Value, strconv.Itoa(v.Ordinal), v.Comment.ToMarkdownText())
+		enumTable.Insert(v.Value, strconv.Itoa(v.Ordinal), v.Comment.ToMarkdownText(false))
 	}
 
 	// Convert to a string
@@ -59,7 +59,7 @@ func EnumToMarkdown(enum *Enum, wc *WriterConfig) (body string, diagram string) 
 		diagram = "\n" + ToMermaid(enum.Name, enum)
 	}
 	if wc.pureMarkdown {
-		body = fmt.Sprintf("## Enum: %s\n%s\n\n%s\n\n%s\n\n", enum.Name, fmt.Sprintf(fqnPureMd, enum.Qualifier), enum.Comment.ToMarkdownText(), enumTable.String())
+		body = fmt.Sprintf("## Enum: %s\n%s\n\n%s\n\n%s\n\n", enum.Name, fmt.Sprintf(fqnPureMd, enum.Qualifier), enum.Comment.ToMarkdownText(true), enumTable.String())
 	} else {
 		body = fmt.Sprintf("## Enum: %s\n%s\n\n%s\n\n%s\n\n", enum.Name, fmt.Sprintf(fqn, enum.Qualifier), enum.Comment.ToMarkdownBlockQuote(), enumTable.String())
 	}
@@ -84,7 +84,7 @@ func MessageToMarkdown(message *Message, wc *WriterConfig) (body string, diagram
 		} else if a.Optional {
 			label = "Optional"
 		}
-		attributeTable.Insert(a.Name, strconv.Itoa(a.Ordinal), strings.Join(a.Kind, Comma), label, a.Comment.ToMarkdownText())
+		attributeTable.Insert(a.Name, strconv.Itoa(a.Ordinal), strings.Join(a.Kind, Comma), label, a.Comment.ToMarkdownText(false))
 	}
 
 	if wc.visualize {
@@ -92,7 +92,7 @@ func MessageToMarkdown(message *Message, wc *WriterConfig) (body string, diagram
 	}
 
 	if wc.pureMarkdown {
-		body = fmt.Sprintf("## Message: %s\n%s\n\n%s\n\n%s\n\n", message.Name, fmt.Sprintf(fqnPureMd, message.Qualifier), message.Comment.ToMarkdownText(), attributeTable.String())
+		body = fmt.Sprintf("## Message: %s\n%s\n\n%s\n\n%s\n\n", message.Name, fmt.Sprintf(fqnPureMd, message.Qualifier), message.Comment.ToMarkdownText(true), attributeTable.String())
 	} else {
 		body = fmt.Sprintf("## Message: %s\n%s\n\n%s\n\n%s\n\n", message.Name, fmt.Sprintf(fqn, message.Qualifier), message.Comment.ToMarkdownBlockQuote(), attributeTable.String())
 	}
@@ -122,7 +122,7 @@ func ServiceToMarkdown(s *Service, wc *WriterConfig) string {
 	for _, m := range s.Methods {
 		methodTable.Insert(m.Name,
 			FormatServiceParameter(m.InputParameters),
-			FormatServiceParameter(m.ReturnParameters), m.Comment.ToMarkdownText())
+			FormatServiceParameter(m.ReturnParameters), m.Comment.ToMarkdownText(false))
 	}
 	table := methodTable.String()
 	if wc.visualize {
@@ -130,7 +130,7 @@ func ServiceToMarkdown(s *Service, wc *WriterConfig) string {
 	}
 
 	if wc.pureMarkdown {
-		return fmt.Sprintf("## Service: %s\n%s\n\n%s\n\n%s\n\n", s.Name, fmt.Sprintf(fqnPureMd, s.Qualifier), s.Comment.ToMarkdownText(), table)
+		return fmt.Sprintf("## Service: %s\n%s\n\n%s\n\n%s\n\n", s.Name, fmt.Sprintf(fqnPureMd, s.Qualifier), s.Comment.ToMarkdownText(true), table)
 	}
 	return fmt.Sprintf("## Service: %s\n%s\n\n%s\n\n%s\n\n", s.Name, fmt.Sprintf(fqn, s.Qualifier), s.Comment.ToMarkdownBlockQuote(), table)
 }
@@ -167,7 +167,7 @@ func PackageFormatImports(p *Package) (body string) {
 	importTable := NewMarkdownTable()
 	importTable.AddHeader("Import", "Description")
 	for _, i := range p.Imports {
-		importTable.Insert(i.Path, i.Comment.ToMarkdownText())
+		importTable.Insert(i.Path, i.Comment.ToMarkdownText(false))
 	}
 	body = fmt.Sprintf("## Imports\n\n%s\n", importTable.String())
 	return body
@@ -177,7 +177,7 @@ func PackageFormatOptions(p *Package) (body string) {
 	optionTable := NewMarkdownTable()
 	optionTable.AddHeader("Name", "Value", "Description")
 	for _, o := range p.Options {
-		optionTable.Insert(o.Name, o.Value, o.Comment.ToMarkdownText())
+		optionTable.Insert(o.Name, o.Value, o.Comment.ToMarkdownText(false))
 	}
 	body = fmt.Sprintf("## Options\n\n%s\n", optionTable.String())
 	return body
@@ -201,7 +201,7 @@ func PackageToMarkDown(p *Package, wc *WriterConfig) string {
 	out += HandleEnums(p.Enums, wc)
 	out += HandleMessages(p.Messages, wc)
 	if wc.pureMarkdown {
-		out = fmt.Sprintf("# Package: %s\n\n%s\n\n%s\n\n%s\n\n%s\n%s\n", p.Name, p.Comment.ToMarkdownText(), PackageFormatImports(p), PackageFormatOptions(p), out, footer)
+		out = fmt.Sprintf("# Package: %s\n\n%s\n\n%s\n\n%s\n\n%s\n%s\n", p.Name, p.Comment.ToMarkdownText(true), PackageFormatImports(p), PackageFormatOptions(p), out, footer)
 	} else {
 		out = fmt.Sprintf("# Package: %s\n\n%s\n\n%s\n\n%s\n\n%s\n%s\n", p.Name, p.Comment.ToMarkdownBlockQuote(), PackageFormatImports(p), PackageFormatOptions(p), out, footer)
 	}

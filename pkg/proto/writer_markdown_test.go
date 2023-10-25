@@ -79,7 +79,8 @@ func TestEnumToMarkdown(t *testing.T) {
 		}, wantBody: `## Enum: TestEnum
 * **FQN**: test.TestEnum
 
-Keen Enum 
+Keen Enum
+
 
 | Name | Ordinal | Description |
 |------|---------|-------------|
@@ -167,7 +168,8 @@ func TestHandleEnums(t *testing.T) {
 		}, wantBody: `## Enum: TestEnum
 * **FQN**: test.Service
 
- 
+
+
 
 | Name | Ordinal | Description |
 |------|---------|-------------|
@@ -260,7 +262,8 @@ func TestHandleMessages(t *testing.T) {
 		}, wantBody: `## Message: Message
 * **FQN**: test.Service.Message
 
- 
+
+
 
 | Field | Ordinal | Type   | Label | Description |
 |-------|---------|--------|-------|-------------|
@@ -354,7 +357,8 @@ func TestMessageToMarkdown(t *testing.T) {
 		}, wantBody: `## Message: Message
 * **FQN**: test.Service.Message
 
- 
+
+
 
 | Field | Ordinal | Type   | Label | Description |
 |-------|---------|--------|-------|-------------|
@@ -502,7 +506,8 @@ func TestPackageToMarkDown(t *testing.T) {
 			},
 		}, want: `# Package: test.package
 
- 
+
+
 
 ## Imports
 
@@ -570,7 +575,8 @@ func TestServiceToMarkdown(t *testing.T) {
 		}}, want: `## Service: Service
 * **FQN**: test.Service
 
- 
+
+
 
 | Method | Parameter (In) | Parameter (Out) | Description |
 |--------|----------------|-----------------|-------------|

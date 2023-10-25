@@ -34,11 +34,15 @@ func (c Comment) ToMermaid() string {
 	return out
 }
 
-func (c Comment) ToMarkdownText() string {
+func (c Comment) ToMarkdownText(linebreak bool) string {
 	comments := strings.Split(string(c), CommentNewLine)
 	out := ""
+	lb := " "
+	if linebreak {
+		lb = "\n"
+	}
 	for _, c := range comments {
-		out += fmt.Sprintf("%s ", c)
+		out += fmt.Sprintf("%s", c) + lb
 	}
 	return out
 }
