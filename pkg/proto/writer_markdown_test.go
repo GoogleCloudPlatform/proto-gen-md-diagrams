@@ -175,7 +175,7 @@ func TestHandleEnums(t *testing.T) {
 
 | Name | Ordinal | Description |
 |------|---------|-------------|
-| T1   | 0       |             |
+| ` + "`" + `T1` + "`" + ` | 0       |             |
 
 
 `},
@@ -268,9 +268,9 @@ func TestHandleMessages(t *testing.T) {
 
 
 
-| Field | Ordinal | Type   | Label | Description |
-|-------|---------|--------|-------|-------------|
-| Name  | 1       | string |       |             |
+| Field  | Ordinal | Type     | Label | Description |
+|--------|---------|----------|-------|-------------|
+| ` + "`" + `Name` + "`" + ` | 1       | ` + "`" + `string` + "`" + ` |       |             |
 
 
 `},
@@ -364,9 +364,9 @@ func TestMessageToMarkdown(t *testing.T) {
 
 
 
-| Field | Ordinal | Type   | Label | Description |
-|-------|---------|--------|-------|-------------|
-| Name  | 1       | string |       |             |
+| Field  | Ordinal | Type     | Label | Description |
+|--------|---------|----------|-------|-------------|
+| ` + "`" + `Name` + "`" + ` | 1       | ` + "`" + `string` + "`" + ` |       |             |
 
 
 `, wantDiagram: "\n### Message Diagram\n\n```mermaid\nclassDiagram\ndirection LR\n\n%% \n\nclass Message {\n  + string Name\n}\n\n```"},

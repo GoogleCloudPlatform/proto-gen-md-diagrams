@@ -51,7 +51,11 @@ func EnumToMarkdown(enum *Enum, wc *WriterConfig) (body string, diagram string) 
 	enumTable := NewMarkdownTable()
 	enumTable.AddHeader("Name", "Ordinal", "Description")
 	for _, v := range enum.Values {
-		enumTable.Insert(v.Value, strconv.Itoa(v.Ordinal), v.Comment.ToMarkdownText(false))
+		if wc.pureMarkdown {
+			enumTable.Insert(fmt.Sprintf("`%s`", v.Value), strconv.Itoa(v.Ordinal), v.Comment.ToMarkdownText(false))
+		} else {
+			enumTable.Insert(v.Value, strconv.Itoa(v.Ordinal), v.Comment.ToMarkdownText(false))
+		}
 	}
 
 	// Convert to a string
@@ -84,7 +88,11 @@ func MessageToMarkdown(message *Message, wc *WriterConfig) (body string, diagram
 		} else if a.Optional {
 			label = "Optional"
 		}
-		attributeTable.Insert(a.Name, strconv.Itoa(a.Ordinal), strings.Join(a.Kind, Comma), label, a.Comment.ToMarkdownText(false))
+		if wc.pureMarkdown {
+			attributeTable.Insert(fmt.Sprintf("`%s`", a.Name), strconv.Itoa(a.Ordinal), fmt.Sprintf("`%s`", strings.Join(a.Kind, Comma)), label, a.Comment.ToMarkdownText(false))
+		} else {
+			attributeTable.Insert(a.Name, strconv.Itoa(a.Ordinal), strings.Join(a.Kind, Comma), label, a.Comment.ToMarkdownText(false))
+		}
 	}
 
 	if wc.visualize {
@@ -120,9 +128,15 @@ func ServiceToMarkdown(s *Service, wc *WriterConfig) string {
 	methodTable := NewMarkdownTable()
 	methodTable.AddHeader("Method", "Parameter (In)", "Parameter (Out)", "Description")
 	for _, m := range s.Methods {
-		methodTable.Insert(m.Name,
-			FormatServiceParameter(m.InputParameters),
-			FormatServiceParameter(m.ReturnParameters), m.Comment.ToMarkdownText(false))
+		if wc.pureMarkdown {
+			methodTable.Insert(fmt.Sprintf("`%s`", m.Name),
+				fmt.Sprintf("`%s`", FormatServiceParameter(m.InputParameters)),
+				fmt.Sprintf("`%s`", FormatServiceParameter(m.ReturnParameters)), m.Comment.ToMarkdownText(false))
+		} else {
+			methodTable.Insert(m.Name,
+				FormatServiceParameter(m.InputParameters),
+				FormatServiceParameter(m.ReturnParameters), m.Comment.ToMarkdownText(false))
+		}
 	}
 	table := methodTable.String()
 	if wc.visualize {
