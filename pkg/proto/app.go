@@ -14,6 +14,7 @@ var debugFlag *bool
 var writeOutputFlag *bool
 var visualizeFlag *bool
 var outputFlag *string
+var pureMdOutputFlag *bool
 
 const (
 	ProtobufSuffix = ".proto"
@@ -24,6 +25,7 @@ func init() {
 	recursiveFlag = flag.Bool("r", true, "Read recursively.")
 	debugFlag = flag.Bool("debugFlag", false, "Enable debugging")
 	writeOutputFlag = flag.Bool("w", true, "Enable writing output")
+	pureMdOutputFlag = flag.Bool("md", false, "Enable pure MD output")
 	visualizeFlag = flag.Bool("v", true, "Enable Visualization")
 	outputFlag = flag.String("o", ".", "Specifies the outputFlag directoryFlag, if not specified, the processor will write markdown in the proto directories.")
 }
@@ -75,11 +77,16 @@ func Execute() {
 		logger.Errorf("failed to process directoryFlag: %s with error: %v", *directoryFlag, err)
 	}
 
+	config := &WriterConfig{
+		visualize:    *visualizeFlag,
+		pureMarkdown: *pureMdOutputFlag,
+	}
+
 	for _, pkg := range packages {
 		dir := filepath.Dir(pkg.Path)
 		bName := filepath.Base(pkg.Path)
 		out := dir + string(filepath.Separator) + bName + ".md"
-		markdown := PackageToMarkDown(pkg, *visualizeFlag)
+		markdown := PackageToMarkDown(pkg, config)
 		if *writeOutputFlag {
 			err = os.WriteFile(out, []byte(markdown), 0644)
 		}
