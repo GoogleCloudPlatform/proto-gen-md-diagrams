@@ -42,7 +42,12 @@ func ToMermaid(title string, rt interface{}) string {
 	return fmt.Sprintf(mermaidClassDiagramTemplate, title, out)
 }
 
-func EnumToMarkdown(enum *Enum, visualize bool) (body string, diagram string) {
+type WriterConfig struct {
+	visualize    bool
+	pureMarkdown bool
+}
+
+func EnumToMarkdown(enum *Enum, wc *WriterConfig) (body string, diagram string) {
 	enumTable := NewMarkdownTable()
 	enumTable.AddHeader("Name", "Ordinal", "Description")
 	for _, v := range enum.Values {
@@ -50,14 +55,14 @@ func EnumToMarkdown(enum *Enum, visualize bool) (body string, diagram string) {
 	}
 
 	// Convert to a string
-	if visualize {
+	if wc.visualize {
 		diagram = "\n" + ToMermaid(enum.Name, enum)
 	}
 	body = fmt.Sprintf("## Enum: %s\n%s\n\n%s\n\n%s\n\n", enum.Name, fmt.Sprintf(fqn, enum.Qualifier), enum.Comment.ToMarkdownBlockQuote(), enumTable.String())
 	return body, diagram
 }
 
-func MessageToMarkdown(message *Message, visualize bool) (body string, diagram string) {
+func MessageToMarkdown(message *Message, wc *WriterConfig) (body string, diagram string) {
 	attributeTable := NewMarkdownTable()
 	attributeTable.AddHeader("Field", "Ordinal", "Type", "Label", "Description")
 
@@ -73,19 +78,19 @@ func MessageToMarkdown(message *Message, visualize bool) (body string, diagram s
 		} else if a.Repeated {
 			label = "Repeated"
 		} else if a.Optional {
-		    label = "Optional"
+			label = "Optional"
 		}
 		attributeTable.Insert(a.Name, strconv.Itoa(a.Ordinal), strings.Join(a.Kind, Comma), label, a.Comment.ToMarkdownText())
 	}
 
-	if visualize {
+	if wc.visualize {
 		diagram = "\n" + ToMermaid(message.Name, message)
 	}
 
 	body = fmt.Sprintf("## Message: %s\n%s\n\n%s\n\n%s\n\n", message.Name, fmt.Sprintf(fqn, message.Qualifier), message.Comment.ToMarkdownBlockQuote(), attributeTable.String())
 
 	for _, e := range message.Enums {
-		eBody, eDiagram := EnumToMarkdown(e, visualize)
+		eBody, eDiagram := EnumToMarkdown(e, wc)
 		body += eBody
 		diagram += eDiagram
 	}
@@ -104,7 +109,7 @@ func FormatServiceParameter(parameters []*Parameter) string {
 	return out
 }
 
-func ServiceToMarkdown(s *Service, visualize bool) string {
+func ServiceToMarkdown(s *Service, wc *WriterConfig) string {
 	methodTable := NewMarkdownTable()
 	methodTable.AddHeader("Method", "Parameter (In)", "Parameter (Out)", "Description")
 	for _, m := range s.Methods {
@@ -113,18 +118,18 @@ func ServiceToMarkdown(s *Service, visualize bool) string {
 			FormatServiceParameter(m.ReturnParameters), m.Comment.ToMarkdownText())
 	}
 	table := methodTable.String()
-	if visualize {
+	if wc.visualize {
 		table = ToMermaid(s.Name, s) + "\n\n" + table
 	}
 
 	return fmt.Sprintf("## Service: %s\n%s\n\n%s\n\n%s\n\n", s.Name, fmt.Sprintf(fqn, s.Qualifier), s.Comment.ToMarkdownBlockQuote(), table)
 }
 
-func HandleEnums(enums []*Enum, visualize bool) (body string) {
+func HandleEnums(enums []*Enum, wc *WriterConfig) (body string) {
 	diagrams := ""
 	if enums != nil {
 		for _, e := range enums {
-			eBody, eDiagram := EnumToMarkdown(e, visualize)
+			eBody, eDiagram := EnumToMarkdown(e, wc)
 			body += eBody
 			diagrams += eDiagram
 		}
@@ -132,17 +137,17 @@ func HandleEnums(enums []*Enum, visualize bool) (body string) {
 	return body + diagrams
 }
 
-func HandleMessages(messages []*Message, visualize bool) (body string) {
+func HandleMessages(messages []*Message, wc *WriterConfig) (body string) {
 	diagrams := ""
 	if messages != nil {
 		for _, m := range messages {
-			mBody, mDiagram := MessageToMarkdown(m, visualize)
+			mBody, mDiagram := MessageToMarkdown(m, wc)
 			body += mBody
-			body += HandleMessages(m.Messages, false)
+			body += HandleMessages(m.Messages, wc)
 			diagrams += mDiagram
 		}
 	}
-	if visualize {
+	if wc.visualize {
 		diagrams += "\n\n"
 	}
 	return diagrams + body
@@ -174,15 +179,15 @@ const footer = `
 <!-- Created by: Proto Diagram Tool -->
 <!-- https://github.com/GoogleCloudPlatform/proto-gen-md-diagrams -->`
 
-func PackageToMarkDown(p *Package, visualize bool) string {
+func PackageToMarkDown(p *Package, wc *WriterConfig) string {
 	out := ""
 	if len(p.Services) > 0 {
 		for _, s := range p.Services {
-			out += ServiceToMarkdown(s, visualize)
+			out += ServiceToMarkdown(s, wc)
 		}
 	}
-	out += HandleEnums(p.Enums, visualize)
-	out += HandleMessages(p.Messages, visualize)
+	out += HandleEnums(p.Enums, wc)
+	out += HandleMessages(p.Messages, wc)
 	out = fmt.Sprintf("# Package: %s\n\n%s\n\n%s\n\n%s\n\n%s\n%s\n", p.Name, p.Comment.ToMarkdownBlockQuote(), PackageFormatImports(p), PackageFormatOptions(p), out, footer)
 	return out
 }

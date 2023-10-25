@@ -24,8 +24,8 @@ import (
 
 func TestEnumToMarkdown(t *testing.T) {
 	type args struct {
-		enum      *Enum
-		visualize bool
+		enum *Enum
+		wc   *WriterConfig
 	}
 	tests := []struct {
 		name        string
@@ -45,7 +45,9 @@ func TestEnumToMarkdown(t *testing.T) {
 					NewEnumValue("test.TestEnum", "1", "T_02", ""),
 				},
 			},
-			visualize: false,
+			wc: &WriterConfig{
+				visualize: false,
+			},
 		}, wantBody: `## Enum: TestEnum
 <div style="font-size: 12px; margin-top: -10px;" class="fqn">FQN: test.TestEnum</div>
 
@@ -61,9 +63,9 @@ func TestEnumToMarkdown(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			gotBody, gotDiagram := EnumToMarkdown(tt.args.enum, tt.args.visualize)
-			assert.Equalf(t, tt.wantBody, gotBody, "EnumToMarkdown(%v, %v)", tt.args.enum, tt.args.visualize)
-			assert.Equalf(t, tt.wantDiagram, gotDiagram, "EnumToMarkdown(%v, %v)", tt.args.enum, tt.args.visualize)
+			gotBody, gotDiagram := EnumToMarkdown(tt.args.enum, tt.args.wc)
+			assert.Equalf(t, tt.wantBody, gotBody, "EnumToMarkdown(%v, %v)", tt.args.enum, tt.args.wc)
+			assert.Equalf(t, tt.wantDiagram, gotDiagram, "EnumToMarkdown(%v, %v)", tt.args.enum, tt.args.wc)
 		})
 	}
 }
@@ -90,8 +92,8 @@ func TestFormatServiceParameter(t *testing.T) {
 
 func TestHandleEnums(t *testing.T) {
 	type args struct {
-		enums     []*Enum
-		visualize bool
+		enums []*Enum
+		wc    *WriterConfig
 	}
 	tests := []struct {
 		name     string
@@ -107,7 +109,9 @@ func TestHandleEnums(t *testing.T) {
 				},
 				Values: []*EnumValue{NewEnumValue("test.Service.TestEnum", "0", "T1", "")},
 			}},
-			visualize: false,
+			wc: &WriterConfig{
+				visualize: false,
+			},
 		}, wantBody: `## Enum: TestEnum
 <div style="font-size: 12px; margin-top: -10px;" class="fqn">FQN: test.Service</div>
 
@@ -122,15 +126,15 @@ func TestHandleEnums(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			assert.Equalf(t, tt.wantBody, HandleEnums(tt.args.enums, tt.args.visualize), "HandleEnums(%v, %v)", tt.args.enums, tt.args.visualize)
+			assert.Equalf(t, tt.wantBody, HandleEnums(tt.args.enums, tt.args.wc), "HandleEnums(%v, %v)", tt.args.enums, tt.args.wc)
 		})
 	}
 }
 
 func TestHandleMessages(t *testing.T) {
 	type args struct {
-		messages  []*Message
-		visualize bool
+		messages []*Message
+		wc       *WriterConfig
 	}
 	tests := []struct {
 		name     string
@@ -160,7 +164,9 @@ func TestHandleMessages(t *testing.T) {
 				Enums:    []*Enum{},
 				Reserved: []*Reserved{},
 			}},
-			visualize: false,
+			wc: &WriterConfig{
+				visualize: false,
+			},
 		}, wantBody: `## Message: Message
 <div style="font-size: 12px; margin-top: -10px;" class="fqn">FQN: test.Service.Message</div>
 
@@ -175,15 +181,15 @@ func TestHandleMessages(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			assert.Equalf(t, tt.wantBody, HandleMessages(tt.args.messages, tt.args.visualize), "HandleMessages(%v, %v)", tt.args.messages, tt.args.visualize)
+			assert.Equalf(t, tt.wantBody, HandleMessages(tt.args.messages, tt.args.wc), "HandleMessages(%v, %v)", tt.args.messages, tt.args.wc)
 		})
 	}
 }
 
 func TestMessageToMarkdown(t *testing.T) {
 	type args struct {
-		message   *Message
-		visualize bool
+		message *Message
+		wc      *WriterConfig
 	}
 	tests := []struct {
 		name        string
@@ -214,7 +220,9 @@ func TestMessageToMarkdown(t *testing.T) {
 				Enums:    []*Enum{},
 				Reserved: []*Reserved{},
 			},
-			visualize: true,
+			wc: &WriterConfig{
+				visualize: true,
+			},
 		}, wantBody: `## Message: Message
 <div style="font-size: 12px; margin-top: -10px;" class="fqn">FQN: test.Service.Message</div>
 
@@ -229,9 +237,9 @@ func TestMessageToMarkdown(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			gotBody, gotDiagram := MessageToMarkdown(tt.args.message, tt.args.visualize)
-			assert.Equalf(t, tt.wantBody, gotBody, "MessageToMarkdown(%v, %v)", tt.args.message, tt.args.visualize)
-			assert.Equalf(t, tt.wantDiagram, gotDiagram, "MessageToMarkdown(%v, %v)", tt.args.message, tt.args.visualize)
+			gotBody, gotDiagram := MessageToMarkdown(tt.args.message, tt.args.wc)
+			assert.Equalf(t, tt.wantBody, gotBody, "MessageToMarkdown(%v, %v)", tt.args.message, tt.args.wc)
+			assert.Equalf(t, tt.wantDiagram, gotDiagram, "MessageToMarkdown(%v, %v)", tt.args.message, tt.args.wc)
 		})
 	}
 }
@@ -307,8 +315,8 @@ func TestPackageFormatOptions(t *testing.T) {
 
 func TestPackageToMarkDown(t *testing.T) {
 	type args struct {
-		p         *Package
-		visualize bool
+		p  *Package
+		wc *WriterConfig
 	}
 	tests := []struct {
 		name string
@@ -326,6 +334,7 @@ func TestPackageToMarkDown(t *testing.T) {
 				Enums:    []*Enum{},
 				Services: []*Service{},
 			},
+			wc: &WriterConfig{},
 		}, want: `# Package: test.package
 
 <div class="comment"><span></span><br/></div>
@@ -352,15 +361,15 @@ func TestPackageToMarkDown(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			assert.Equalf(t, tt.want, PackageToMarkDown(tt.args.p, tt.args.visualize), "PackageToMarkDown(%v, %v)", tt.args.p, tt.args.visualize)
+			assert.Equalf(t, tt.want, PackageToMarkDown(tt.args.p, tt.args.wc), "PackageToMarkDown(%v, %v)", tt.args.p, tt.args.wc)
 		})
 	}
 }
 
 func TestServiceToMarkdown(t *testing.T) {
 	type args struct {
-		s         *Service
-		visualize bool
+		s  *Service
+		wc *WriterConfig
 	}
 	tests := []struct {
 		name string
@@ -374,7 +383,7 @@ func TestServiceToMarkdown(t *testing.T) {
 				Comment:   "",
 			},
 			Methods: []*Rpc{},
-		}}, want: `## Service: Service
+		}, wc: &WriterConfig{}}, want: `## Service: Service
 <div style="font-size: 12px; margin-top: -10px;" class="fqn">FQN: test.Service</div>
 
 <div class="comment"><span></span><br/></div>
@@ -387,7 +396,7 @@ func TestServiceToMarkdown(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			assert.Equalf(t, tt.want, ServiceToMarkdown(tt.args.s, tt.args.visualize), "ServiceToMarkdown(%v, %v)", tt.args.s, tt.args.visualize)
+			assert.Equalf(t, tt.want, ServiceToMarkdown(tt.args.s, tt.args.wc), "ServiceToMarkdown(%v, %v)", tt.args.s, tt.args.wc)
 		})
 	}
 }
