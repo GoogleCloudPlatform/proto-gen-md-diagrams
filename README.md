@@ -23,7 +23,7 @@ or open a bug. Please follow the [Contributing](CONTRIBUTING.md) guidelines.
 ##### Using Native Go
 ```shell
 go build && go test ./...
-./proto-gen-md-diarams -d test/protos
+./proto-gen-md-diagrams -d test/protos
 ````
 
 ##### Using Bazel
