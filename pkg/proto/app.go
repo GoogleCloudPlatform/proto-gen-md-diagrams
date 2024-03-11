@@ -76,9 +76,8 @@ func Execute() {
 	}
 
 	for _, pkg := range packages {
-		dir := filepath.Dir(pkg.Path)
 		bName := filepath.Base(pkg.Path)
-		out := dir + string(filepath.Separator) + bName + ".md"
+                out := *outputFlag + string(filepath.Separator) + bName + ".md"
 		markdown := PackageToMarkDown(pkg, *visualizeFlag)
 		if *writeOutputFlag {
 			err = os.WriteFile(out, []byte(markdown), 0644)
