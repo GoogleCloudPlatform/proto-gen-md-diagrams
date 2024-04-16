@@ -62,8 +62,7 @@ func MessageToMarkdown(message *Message, visualize bool) (body string, diagram s
 	attributeTable.AddHeader("Field", "Ordinal", "Type", "Label", "Description")
 
 	sort.Slice(message.Attributes, func(i, j int) bool {
-		v := strings.Compare(message.Attributes[i].Name, message.Attributes[j].Name)
-		return v < 0
+		return message.Attributes[i].Ordinal < message.Attributes[j].Ordinal
 	})
 
 	for _, a := range message.Attributes {
@@ -73,7 +72,7 @@ func MessageToMarkdown(message *Message, visualize bool) (body string, diagram s
 		} else if a.Repeated {
 			label = "Repeated"
 		} else if a.Optional {
-		    label = "Optional"
+			label = "Optional"
 		}
 		attributeTable.Insert(a.Name, strconv.Itoa(a.Ordinal), strings.Join(a.Kind, Comma), label, a.Comment.ToMarkdownText())
 	}
