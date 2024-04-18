@@ -75,8 +75,7 @@ func MessageToMarkdown(message *Message, wc *WriterConfig) (body string, diagram
 	attributeTable.AddHeader("Field", "Ordinal", "Type", "Label", "Description")
 
 	sort.Slice(message.Attributes, func(i, j int) bool {
-		v := strings.Compare(message.Attributes[i].Name, message.Attributes[j].Name)
-		return v < 0
+		return message.Attributes[i].Ordinal < message.Attributes[j].Ordinal
 	})
 
 	for _, a := range message.Attributes {
