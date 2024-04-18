@@ -55,11 +55,10 @@ func TestEnumToMarkdown(t *testing.T) {
 
 | Name | Ordinal | Description |
 |------|---------|-------------|
-| T_01 | 0       |             |
-| T_02 | 1       |             |
-
-
-`, wantDiagram: ``},
+` +
+"| T_01 | 0       |             |\n" +
+"| T_02 | 1       |             |\n\n\n",
+wantDiagram: ``},
 		{name: "Enum Markdown", args: args{
 			enum: &Enum{
 				Qualified: &Qualified{
@@ -83,13 +82,11 @@ func TestEnumToMarkdown(t *testing.T) {
 Keen Enum
 
 
-| Name | Ordinal | Description |
-|------|---------|-------------|
-| T_01 | 0       |             |
-| T_02 | 1       |             |
-
-
-`, wantDiagram: ``},
+| Name   | Ordinal | Description |
+|--------|---------|-------------|` +
+"\n| `T_01` | 0       |             |\n" +
+"| `T_02` | 1       |             |\n\n\n",
+wantDiagram: ``},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
