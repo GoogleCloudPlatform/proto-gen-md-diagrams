@@ -84,10 +84,25 @@ func Execute() {
 
 	for _, pkg := range packages {
 		bName := filepath.Base(pkg.Path)
-    		out := *outputFlag + string(filepath.Separator) + bName + ".md"
+		// get the relative path to the protofile based on the input directory
+		fileRelativeToInputDir, err := filepath.Rel(*directoryFlag, pkg.Path)
+		if err != nil {
+			logger.Errorf("failed to get relative directory %vy\n", err)
+		}
+
+		relativeDir := filepath.Dir(fileRelativeToInputDir)
+		out := filepath.Join(*outputFlag, relativeDir, bName+".md")
 		markdown := PackageToMarkDown(pkg, config)
 
 		if *writeOutputFlag {
+			logger.Infof("Writing file: %v\n", out)
+
+			// we first have to ensure the directory exists before writing the file
+			err = os.MkdirAll(filepath.Dir(out), 0750)
+			if err != nil {
+				logger.Errorf("Could not create subdirectories", err)
+				return
+			}
 			err = os.WriteFile(out, []byte(markdown), 0644)
 		}
 		if err != nil {
