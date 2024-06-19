@@ -36,8 +36,10 @@ func ParseAnnotations(in string) []*Annotation {
 	out := make([]*Annotation, 0)
 	if strings.Contains(in, OpenBracket) && strings.Contains(in, ClosedBracket) {
 		annotationString := in[strings.Index(in, OpenBracket)+1 : strings.Index(in, ClosedBracket)]
-		split := strings.Split(strings.ReplaceAll(annotationString, SingleQuote, Empty), Space)
-		out = append(out, NewAnnotation(split[0], split[2]))
+		split := strings.Split(strings.ReplaceAll(annotationString, SingleQuote, Empty), "=")
+		if len(split) > 1 {
+			out = append(out, NewAnnotation(strings.TrimSpace(split[0]), strings.TrimSpace(split[1])))
+		}
 	}
 	return out
 }
