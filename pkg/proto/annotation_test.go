@@ -51,6 +51,10 @@ func TestParseAnnotations(t *testing.T) {
 		want []*Annotation
 	}{
 		{name: "Test 001", args: args{in: "int32 longitude_degrees = 3 [json_name = 'lng_d'];"}, want: []*Annotation{{Name: "json_name", Value: "lng_d"}}},
+		// note that even if the source file declares the annotation with white space around `=` some pre-processor upstream of the annotation parser strips it
+		{name: "Test without whitespace", args: args{in: "optional uint32 weight = 18 [deprecated=true];"}, want: []*Annotation{{Name: "deprecated", Value: "true"}}},
+		// projects that import google/protobuf/timestamp.proto end up parsing the large comment block for annotation and runs into [toISOString()]. There must be another bug upstream, but the Annotation parser shall be protected too.
+		{name: "Test google.protobuf.timestamp.proto", args: args{in: "...using the // standard // [toISOString()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString) // method"}, want: []*Annotation{}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
