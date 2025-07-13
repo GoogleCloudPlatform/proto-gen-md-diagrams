@@ -43,23 +43,23 @@ jobs:
 
       - name: Build and Package for Linux (x86_64)
         run: |
-          bazel build //path/to/package:main_zip --config=on_linux
-          mv bazel-bin/path/to/package/binary.zip release/proto-gen-md-diagrams-linux-x86_64.zip
+          bazel build //:main_zip --config=on_linux
+          mv bazel-bin/dist/archive.zip release/proto-gen-md-diagrams-linux-x86_64.zip
 
       - name: Build and Package for macOS (x86_64)
         run: |
-          bazel build //path/to/package:main_zip --config=on_osx_x64
-          mv bazel-bin/path/to/package/binary.zip release/proto-gen-md-diagrams-osx-x86_64.zip
+          bazel build //:main_zip --config=on_osx_x64
+          mv bazel-bin/dist/archive.zip release/proto-gen-md-diagrams-osx-x86_64.zip
 
       - name: Build and Package for macOS (ARM64)
         run: |
-          bazel build //path/to/package:main_zip --config=on_osx_arm64
-          mv bazel-bin/path/to/package/binary.zip release/proto-gen-md-diagrams-osx-arm64.zip
+          bazel build //:main_zip --config=on_osx_arm64
+          mv bazel-bin/dist/archive.zip release/proto-gen-md-diagrams-osx-arm64.zip
 
       - name: Build and Package for Windows (x86_64)
         run: |
-          bazel build //path/to/package:main_zip --config=on_windows
-          mv bazel-bin/path/to/package/binary.zip release/proto-gen-md-diagrams-win-x86_64.zip
+          bazel build //:main_zip --config=on_windows
+          mv bazel-bin/dist/archive.zip release/proto-gen-md-diagrams-win-x86_64.zip
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1

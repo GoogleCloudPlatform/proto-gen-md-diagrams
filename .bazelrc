@@ -14,8 +14,16 @@
 
 try-import %workspace%/user.bazelrc
 
-common --enable_bzlmod
+common --enable_bzlmod --enable_platform_specific_config
 
 build --java_language_version=17
 
 test --java_language_version=17 --test_output=all --cache_test_results=no
+
+build:on_linux --compiler=gcc --cxxopt=-std=c++17 --host_cxxopt=-std=c++17
+
+build:on_osx_x64 --macos_cpus=x86_64
+build:on_osx_arm64 --macos_cpus=arm64
+build:on_macos_universal --macos_cpus=x86_64,arm64
+
+build:on_windows --cpu=x64_windows

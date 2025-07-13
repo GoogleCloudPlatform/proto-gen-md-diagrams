@@ -47,7 +47,7 @@ pkg_zip(
         "README.md",
         ":main",
     ],
-    out = "binary.zip",
+    out = "dist/archive.zip",
     package_file_name = select({
         "on_linux": "{}-linux-x86_64".format(archive_base_name),
         "on_osx_x64": "{}-osx-x86_64".format(archive_base_name),
