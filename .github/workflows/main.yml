@@ -38,6 +38,7 @@ jobs:
     if: github.ref == 'refs/heads/main'
 
     steps:
+
       - name: Checkout code
         uses: actions/checkout@v4
 
@@ -45,27 +46,37 @@ jobs:
         run: mkdir release
 
       - name: Build and Package for Linux (x86_64)
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_KEY }}
         run: |
           bazel build //:main_zip --config=on_linux
           mv bazel-bin/dist/archive.zip release/proto-gen-md-diagrams-linux-x86_64.zip
 
       - name: Build and Package for macOS (x86_64)
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_KEY }}
         run: |
           bazel build //:main_zip --config=on_osx_x64
           mv bazel-bin/dist/archive.zip release/proto-gen-md-diagrams-osx-x86_64.zip
 
       - name: Build and Package for macOS (ARM64)
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_KEY }}
         run: |
           bazel build //:main_zip --config=on_osx_arm64
           mv bazel-bin/dist/archive.zip release/proto-gen-md-diagrams-osx-arm64.zip
 
       - name: Build and Package for Windows (x86_64)
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_KEY }}
         run: |
           bazel build //:main_zip --config=on_windows
           mv bazel-bin/dist/archive.zip release/proto-gen-md-diagrams-win-x86_64.zip
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_KEY }}
         with:
           tag_name: "release-${{ github.sha }}"
           files: release/*
