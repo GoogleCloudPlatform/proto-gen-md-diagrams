@@ -3,7 +3,7 @@
 #
 # macOS-specific excludes
 .DS_Store
-
+.ijwb
 
 # IntelliJ Idea
 *.iml
