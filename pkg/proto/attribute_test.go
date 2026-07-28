@@ -76,6 +76,14 @@ func TestAttribute_ToMermaid(t *testing.T) {
 			Name:      "Test",
 			Comment:   "This is a test",
 		}, Repeated: false, Map: false, Kind: []string{"string"}, Ordinal: 1}, want: "+ string Test"},
+		{name: "Oneof Group", fields: fields{Qualified: &Qualified{
+			Qualifier: "test.qualifier",
+			Name:      "Choice",
+		}, Kind: []string{"int32"}, Ordinal: 2}, want: "+ Oneof~int32~ Choice [oneof: payload]"},
+		{name: "Deprecated Field", fields: fields{Qualified: &Qualified{
+			Qualifier: "test.qualifier",
+			Name:      "OldField",
+		}, Kind: []string{"string"}, Ordinal: 3, Annotations: []*Annotation{{Name: "deprecated", Value: "true"}}}, want: "+ string OldField [deprecated]"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -86,6 +94,10 @@ func TestAttribute_ToMermaid(t *testing.T) {
 				Kind:        tt.fields.Kind,
 				Ordinal:     tt.fields.Ordinal,
 				Annotations: tt.fields.Annotations,
+			}
+			if tt.name == "Oneof Group" {
+				a.Oneof = true
+				a.OneofGroup = "payload"
 			}
 			assert.Equalf(t, tt.want, a.ToMermaid(), "ToMermaid()")
 		})

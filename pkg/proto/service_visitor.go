@@ -39,15 +39,15 @@ func (sv *ServiceVisitor) Visit(scanner Scanner, in *Line, namespace string) int
 	out := NewService(namespace, values[1], in.Comment)
 
 	comment := Comment("")
+	braceDepth := 1
 
 	for scanner.Scan() {
 		line := scanner.ReadLine()
 		Log.Debugf("Scanning line in service: %s", line.Syntax)
-		if line.Token == CloseBrace {
-			break
-		}
+		visited := false
 		for _, visitor := range sv.Visitors {
 			if visitor.CanVisit(line) {
+				visited = true
 				rt := visitor.Visit(scanner, line, Join(Period, namespace, out.Name))
 				switch t := rt.(type) {
 				case *Rpc:
@@ -56,6 +56,17 @@ func (sv *ServiceVisitor) Visit(scanner Scanner, in *Line, namespace string) int
 					comment = comment.Clear()
 				case Comment:
 					comment = comment.Append(t).AddSpace()
+				}
+				break
+			}
+		}
+		if !visited {
+			if line.Token == OpenBrace || strings.Contains(line.Syntax, OpenBrace) {
+				braceDepth++
+			} else if line.Token == CloseBrace || strings.Contains(line.Syntax, CloseBrace) {
+				braceDepth--
+				if braceDepth == 0 {
+					break
 				}
 			}
 		}

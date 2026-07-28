@@ -18,7 +18,14 @@ package proto
 
 // Constants used for parsing and interpretation
 const (
-	Protobuf3Types = "double,float,int32,int64,uint32,uint64,sint32,sint64,fixed32,fixed64,sfixed32,sfixed64,bool,string,bytes"
+	Protobuf3Types = "double,float,int32,int64,uint32,uint64,sint32,sint64,fixed32,fixed64,sfixed32,sfixed64,bool,string,bytes," +
+		"google.protobuf.Timestamp,Timestamp,google.protobuf.Duration,Duration,google.protobuf.Any,Any," +
+		"google.protobuf.Struct,Struct,google.protobuf.Value,Value,google.protobuf.ListValue,ListValue,google.protobuf.NullValue,NullValue," +
+		"google.protobuf.FieldMask,FieldMask,google.protobuf.Empty,Empty," +
+		"google.protobuf.DoubleValue,DoubleValue,google.protobuf.FloatValue,FloatValue," +
+		"google.protobuf.Int64Value,Int64Value,google.protobuf.UInt64Value,UInt64Value," +
+		"google.protobuf.Int32Value,Int32Value,google.protobuf.UInt32Value,UInt32Value," +
+		"google.protobuf.BoolValue,BoolValue,google.protobuf.StringValue,StringValue,google.protobuf.BytesValue,BytesValue"
 
 	PrefixRepeated = "repeated"
 	PrefixMap      = "map"

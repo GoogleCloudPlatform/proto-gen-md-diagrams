@@ -88,7 +88,7 @@ func Execute() {
 		// get the relative path to the protofile based on the input directory
 		fileRelativeToInputDir, err := filepath.Rel(*directoryFlag, pkg.Path)
 		if err != nil {
-			logger.Errorf("failed to get relative directory %vy\n", err)
+			logger.Errorf("failed to get relative directory %v\n", err)
 		}
 
 		relativeDir := filepath.Dir(fileRelativeToInputDir)
@@ -100,7 +100,7 @@ func Execute() {
 			// we first have to ensure the directory exists before writing the file
 			err = os.MkdirAll(filepath.Dir(out), 0750)
 			if err != nil {
-				logger.Errorf("Could not create subdirectories", err)
+				logger.Errorf("Could not create subdirectories: %v\n", err)
 				return
 			}
 			err = os.WriteFile(out, []byte(markdown), 0644)

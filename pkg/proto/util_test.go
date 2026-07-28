@@ -18,6 +18,7 @@ package proto
 
 import (
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -178,4 +179,71 @@ func TestRemoveSemicolon(t *testing.T) {
 			assert.Equalf(t, tt.want, RemoveSemicolon(tt.args.in), "RemoveSemicolon(%v)", tt.args.in)
 		})
 	}
+}
+
+func TestReadRunesToArray(t *testing.T) {
+	input := `message CancelDetailsExt {
+/* XY id /
+string orderId = 1;
+/ Order cancellation code /
+int32 code = 2;
+/*
+
+comment
+description more
+again more description
+/
+string percentage = 3;
+/ Ticket id of ticket for cancellation /
+string ticketId = 4;
+/ Signature of ticket for cancellation */
+string signature = 5;
+}`
+
+	expected := []string{
+		"message CancelDetailsExt {",
+		"/* XY id /",
+		"string orderId = 1;",
+		"/ Order cancellation code /",
+		"int32 code = 2;",
+		"/*:~::~:comment:~:description more:~:again more description:~:/",
+		"string percentage = 3;",
+		"/ Ticket id of ticket for cancellation /",
+		"string ticketId = 4;",
+		"/ Signature of ticket for cancellation */",
+		"string signature = 5;",
+		"}",
+	}
+
+	result := ReadRunesToArray(strings.NewReader(input))
+	assert.Equal(t, expected, result)
+}
+
+func TestReadRunesToArray_CommentWithSemicolon(t *testing.T) {
+	input := `syntax = "proto3";
+
+package md.test;
+
+// Example for issue
+message Example {
+  // This comment is ok
+  int32 a = 1;
+  // This comment have a semicolon: text;text
+  int32 b = 2;
+}`
+
+	expected := []string{
+		"syntax = \"proto3\";",
+		"package md.test;",
+		"// Example for issue",
+		"message Example {",
+		"// This comment is ok",
+		"int32 a = 1;",
+		"// This comment have a semicolon: text;text",
+		"int32 b = 2;",
+		"}",
+	}
+
+	result := ReadRunesToArray(strings.NewReader(input))
+	assert.Equal(t, expected, result)
 }

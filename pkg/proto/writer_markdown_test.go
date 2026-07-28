@@ -56,9 +56,9 @@ func TestEnumToMarkdown(t *testing.T) {
 | Name | Ordinal | Description |
 |------|---------|-------------|
 ` +
-"| T_01 | 0       |             |\n" +
-"| T_02 | 1       |             |\n\n\n",
-wantDiagram: ``},
+			"| T_01 | 0       |             |\n" +
+			"| T_02 | 1       |             |\n\n\n",
+			wantDiagram: ``},
 		{name: "Enum Markdown", args: args{
 			enum: &Enum{
 				Qualified: &Qualified{
@@ -84,9 +84,9 @@ Keen Enum
 
 | Name   | Ordinal | Description |
 |--------|---------|-------------|` +
-"\n| `T_01` | 0       |             |\n" +
-"| `T_02` | 1       |             |\n\n\n",
-wantDiagram: ``},
+			"\n| `T_01` | 0       |             |\n" +
+			"| `T_02` | 1       |             |\n\n\n",
+			wantDiagram: ``},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -591,4 +591,38 @@ func TestServiceToMarkdown(t *testing.T) {
 			assert.Equalf(t, tt.want, ServiceToMarkdown(tt.args.s, tt.args.wc), "ServiceToMarkdown(%v, %v)", tt.args.s, tt.args.wc)
 		})
 	}
+}
+
+func TestPackageToMarkDown_WithSiblingMessages(t *testing.T) {
+	pkg := &Package{
+		Name: "md.test",
+		Messages: []*Message{
+			{
+				Qualified: &Qualified{Qualifier: "md.test.Email", Name: "Email"},
+				Attributes: []*Attribute{
+					{Qualified: &Qualified{Qualifier: "md.test.Email.from", Name: "from"}, Kind: []string{"Address"}, Ordinal: 1},
+					{Qualified: &Qualified{Qualifier: "md.test.Email.to", Name: "to"}, Kind: []string{"Address"}, Ordinal: 2},
+					{Qualified: &Qualified{Qualifier: "md.test.Email.subject", Name: "subject"}, Kind: []string{"string"}, Ordinal: 3},
+					{Qualified: &Qualified{Qualifier: "md.test.Email.content", Name: "content"}, Kind: []string{"string"}, Ordinal: 4},
+				},
+			},
+			{
+				Qualified: &Qualified{Qualifier: "md.test.Address", Name: "Address"},
+				Attributes: []*Attribute{
+					{Qualified: &Qualified{Qualifier: "md.test.Address.email", Name: "email"}, Kind: []string{"string"}, Ordinal: 1},
+					{Qualified: &Qualified{Qualifier: "md.test.Address.name", Name: "name"}, Kind: []string{"string"}, Ordinal: 2},
+				},
+			},
+		},
+	}
+
+	wc := &WriterConfig{visualize: true}
+	result := PackageToMarkDown(pkg, wc)
+
+	assert.Contains(t, result, "### md.test Diagram")
+	assert.Contains(t, result, "class Email {")
+	assert.Contains(t, result, "Email --> `Address`")
+	assert.Contains(t, result, "class Address {")
+	assert.Contains(t, result, "+ string email")
+	assert.Contains(t, result, "+ string name")
 }

@@ -46,7 +46,7 @@ func EnumToMermaid(e *Enum) string {
 	for _, v := range e.Values {
 		out += fmt.Sprintf("  %s\n", v.Value)
 	}
-	out += "}"
+	out += "}\n"
 	return out
 }
 
@@ -106,7 +106,7 @@ func FormatParametersForMermaid(in []*Parameter) string {
 }
 
 // FormatRelationships formats a service relationship
-func FormatRelationships(name string, in []*Parameter) string {
+func FormatRelationships(name string, in []*Parameter, isInput bool) string {
 	out := ""
 	for _, i := range in {
 		t := strings.TrimSpace(i.Type)
@@ -115,7 +115,11 @@ func FormatRelationships(name string, in []*Parameter) string {
 		}
 
 		if i.Stream {
-			out += fmt.Sprintf("%s --o `%s`\n", name, t)
+			if isInput {
+				out += fmt.Sprintf("%s --o `%s` : client stream\n", name, t)
+			} else {
+				out += fmt.Sprintf("%s --o `%s` : server stream\n", name, t)
+			}
 		} else {
 			out += fmt.Sprintf("%s --> `%s`\n", name, t)
 		}
@@ -134,8 +138,8 @@ func ServiceToMermaid(s *Service) string {
 			FormatParametersForMermaid(m.InputParameters),
 			FormatParametersForMermaid(m.ReturnParameters))
 
-		relationships += FormatRelationships(s.Name, m.InputParameters)
-		relationships += FormatRelationships(s.Name, m.ReturnParameters)
+		relationships += FormatRelationships(s.Name, m.InputParameters, true)
+		relationships += FormatRelationships(s.Name, m.ReturnParameters, false)
 	}
 	out += "}\n"
 	out += relationships

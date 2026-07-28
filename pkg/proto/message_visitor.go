@@ -42,17 +42,17 @@ func (mv *MessageVisitor) Visit(scanner Scanner, in *Line, namespace string) int
 	out.Comment = in.Comment
 
 	var comment = Comment("")
+	braceDepth := 1
 
 	for scanner.Scan() {
 		line := scanner.ReadLine()
 
 		Log.Debugf("Current Line: `%s`\n", line)
 
-		if strings.HasSuffix(line.Token, CloseBrace) {
-			break
-		}
+		visited := false
 		for _, visitor := range RegisteredVisitors {
 			if visitor.CanVisit(line) {
+				visited = true
 				rt := visitor.Visit(
 					scanner,
 					line,
@@ -72,10 +72,41 @@ func (mv *MessageVisitor) Visit(scanner Scanner, in *Line, namespace string) int
 						out.Attributes = append(out.Attributes, t)
 						comment = comment.Clear()
 					}
+				case *Oneof:
+					for _, attr := range t.Attributes {
+						if attr.IsValid() {
+							out.Attributes = append(out.Attributes, attr)
+						}
+					}
+					comment = comment.Clear()
 				case *Reserved:
 					out.Reserved = append(out.Reserved, t)
+				case *Group:
+					if t != nil {
+						if t.Message != nil {
+							t.Message.Comment = comment.AddSpace().Append(t.Message.Comment).TrimSpace()
+							out.Messages = append(out.Messages, t.Message)
+						}
+						if t.Attribute != nil && t.Attribute.IsValid() {
+							t.Attribute.Comment = comment.AddSpace().Append(t.Attribute.Comment).TrimSpace()
+							out.Attributes = append(out.Attributes, t.Attribute)
+						}
+						comment = comment.Clear()
+					}
 				case Comment:
 					comment = comment.Append(t).AddSpace()
+				}
+				break
+			}
+		}
+
+		if !visited {
+			if line.Token == OpenBrace || strings.Contains(line.Syntax, OpenBrace) {
+				braceDepth++
+			} else if line.Token == CloseBrace || strings.Contains(line.Syntax, CloseBrace) {
+				braceDepth--
+				if braceDepth == 0 {
+					break
 				}
 			}
 		}

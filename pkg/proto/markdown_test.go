@@ -115,9 +115,9 @@ func TestMarkdownTable_EvaluateWidth(t *testing.T) {
 				columnLengths: make([]int, 0),
 				data:          make([][]string, 0),
 			}, args: args{
-			i: 0,
-			d: "test",
-		}},
+				i: 0,
+				d: "test",
+			}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

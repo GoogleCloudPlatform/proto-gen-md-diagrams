@@ -47,14 +47,14 @@ func (ev *EnumVisitor) Visit(scanner Scanner, in *Line, namespace string) interf
 	out := NewEnum(Join(Period, namespace, fValues[1]), fValues[1], in.Comment)
 
 	var comment = Comment(Empty)
+	braceDepth := 1
 
 	for scanner.Scan() {
 		n := scanner.ReadLine()
-		if strings.HasSuffix(n.Token, CloseBrace) {
-			break
-		}
+		visited := false
 		for _, visitor := range ev.Visitors {
 			if visitor.CanVisit(n) {
+				visited = true
 				rt := visitor.Visit(
 					scanner,
 					n,
@@ -69,6 +69,17 @@ func (ev *EnumVisitor) Visit(scanner Scanner, in *Line, namespace string) interf
 					comment = comment.Append(t).AddSpace()
 				default:
 					Log.Infof("unable to parse enum value: %t", t)
+				}
+				break
+			}
+		}
+		if !visited {
+			if n.Token == OpenBrace || strings.Contains(n.Syntax, OpenBrace) {
+				braceDepth++
+			} else if n.Token == CloseBrace || strings.Contains(n.Syntax, CloseBrace) {
+				braceDepth--
+				if braceDepth == 0 {
+					break
 				}
 			}
 		}

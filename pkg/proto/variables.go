@@ -43,6 +43,9 @@ func init() {
 		&OptionVisitor{},
 		&MessageVisitor{},
 		&ReservedVisitor{},
+		NewExtendVisitor(),
+		NewGroupVisitor(),
+		NewOneofVisitor(),
 		NewEnumVisitor(),
 		NewAttributeVisitor(),
 		NewServiceVisitor())
