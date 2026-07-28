@@ -34,9 +34,9 @@ type AttributeVisitor struct {
 // it's a map, repeated, optional, or can effectively be split
 func (av *AttributeVisitor) CanVisit(in *Line) bool {
 	return (!strings.HasSuffix(in.Syntax, OpenBrace) || !strings.HasSuffix(in.Syntax, CloseBrace)) &&
-			strings.HasPrefix(in.Syntax, "repeated") ||
-			strings.HasPrefix(in.Syntax, "optional") ||
-			strings.HasPrefix(in.Syntax, "map") || len(in.SplitSyntax()) >= 4
+		strings.HasPrefix(in.Syntax, "repeated") ||
+		strings.HasPrefix(in.Syntax, "optional") ||
+		strings.HasPrefix(in.Syntax, "map") || len(in.SplitSyntax()) >= 4
 }
 
 // HandleRepeated marshals the attribute into a repeated representation, e.g. List.

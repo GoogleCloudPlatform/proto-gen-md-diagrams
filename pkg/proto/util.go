@@ -18,6 +18,7 @@ package proto
 
 import (
 	"bufio"
+	"io"
 	"os"
 	"regexp"
 	"strconv"
@@ -70,11 +71,49 @@ func NormalizeName(in string) string {
 	return strings.ReplaceAll(strings.ToLower(clean), Space, "_")
 }
 
+func isBlockCommentStart(line string) bool {
+	return strings.HasPrefix(line, MultiLineCommentInitiator) || (strings.HasPrefix(line, "/") && !strings.HasPrefix(line, InlineCommentPrefix))
+}
+
+func isBlockCommentEnd(line string, runeStr string) bool {
+	if !isBlockCommentStart(line) {
+		return false
+	}
+	if strings.HasPrefix(line, MultiLineCommentInitiator) {
+		if len(line) >= 4 && strings.HasSuffix(line, MultilineCommentTerminator) {
+			return true
+		}
+		if len(line) >= 3 && strings.HasSuffix(line, "/") && !strings.HasSuffix(line, InlineCommentPrefix) {
+			if runeStr == EndL || strings.HasSuffix(line, " /") || strings.HasSuffix(line, CommentNewLine+"/") || strings.HasSuffix(line, CommentNewLine+" /") {
+				return true
+			}
+		}
+	} else if strings.HasPrefix(line, "/") {
+		if len(line) >= 3 && strings.HasSuffix(line, MultilineCommentTerminator) {
+			return true
+		}
+		if len(line) >= 3 && strings.HasSuffix(line, "/") && !strings.HasSuffix(line, InlineCommentPrefix) {
+			if runeStr == EndL || strings.HasSuffix(line, " /") || strings.HasSuffix(line, CommentNewLine+"/") || strings.HasSuffix(line, CommentNewLine+" /") {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+func isCommentLine(line string) bool {
+	return strings.HasPrefix(line, InlineCommentPrefix) || isBlockCommentStart(line)
+}
+
 func ReadFileToArray(file *os.File) []string {
+	return ReadRunesToArray(file)
+}
+
+func ReadRunesToArray(reader io.Reader) []string {
 	cleaner := regexp.MustCompile(`\s+|\n`)
 	lines := make([]string, 0)
 
-	scanner := bufio.NewScanner(file)
+	scanner := bufio.NewScanner(reader)
 	scanner.Split(bufio.ScanRunes)
 
 	line := ""
@@ -82,7 +121,7 @@ func ReadFileToArray(file *os.File) []string {
 
 	for scanner.Scan() {
 		rune := scanner.Text()
-		if !strings.HasPrefix(line, MultiLineCommentInitiator) && (rune == Semicolon || rune == OpenBrace || rune == CloseBrace) {
+		if !isCommentLine(line) && (rune == Semicolon || rune == OpenBrace || rune == CloseBrace) {
 			lines = append(lines, cleaner.ReplaceAllString(line+rune, Space))
 			tokenReached = true
 			line = ""
@@ -100,9 +139,19 @@ func ReadFileToArray(file *os.File) []string {
 			}
 			line = ""
 			tokenReached = false
-		} else if strings.HasPrefix(line, MultiLineCommentInitiator) && strings.HasSuffix(line, MultilineCommentTerminator) {
-			lines = append(lines, cleaner.ReplaceAllString(strings.TrimSpace(line), Space))
+		} else if isBlockCommentStart(line) && isBlockCommentEnd(line, rune) {
+			if tokenReached {
+				lines = append(lines, cleaner.ReplaceAllString(strings.TrimSpace(line), Space))
+				// Swap first and last element
+				pLine := lines[len(lines)-2]
+				cLine := lines[len(lines)-1]
+				lines[len(lines)-2] = cLine
+				lines[len(lines)-1] = pLine
+			} else {
+				lines = append(lines, cleaner.ReplaceAllString(strings.TrimSpace(line), Space))
+			}
 			line = ""
+			tokenReached = false
 		} else {
 			if rune != EndL {
 				if rune == Space {
@@ -112,9 +161,22 @@ func ReadFileToArray(file *os.File) []string {
 				} else {
 					line += rune
 				}
+				if isBlockCommentStart(line) && isBlockCommentEnd(line, rune) {
+					if tokenReached {
+						lines = append(lines, cleaner.ReplaceAllString(strings.TrimSpace(line), Space))
+						pLine := lines[len(lines)-2]
+						cLine := lines[len(lines)-1]
+						lines[len(lines)-2] = cLine
+						lines[len(lines)-1] = pLine
+					} else {
+						lines = append(lines, cleaner.ReplaceAllString(strings.TrimSpace(line), Space))
+					}
+					line = ""
+					tokenReached = false
+				}
 			} else {
 				// Add a space to account for new lines in multiline comment
-				if strings.HasPrefix(line, MultiLineCommentInitiator) {
+				if isBlockCommentStart(line) {
 					line += CommentNewLine
 				}
 				tokenReached = false

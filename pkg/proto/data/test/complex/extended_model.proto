@@ -1,0 +1,37 @@
+syntax = "proto2";
+
+package test.complex;
+
+import "google/protobuf/timestamp.proto";
+
+option java_package = "com.test.complex";
+
+message CustomData {
+  optional string id = 1;
+}
+
+message ComplexMessage {
+  optional google.protobuf.Timestamp created = 1;
+
+  oneof payload {
+    string text = 2;
+    CustomData data = 3;
+  }
+
+  optional string old_field = 4 [deprecated = true];
+
+  optional group Result = 5 {
+    optional string status = 1;
+  }
+}
+
+extend ComplexMessage {
+  optional string extra_field = 100;
+}
+
+service ComplexService {
+  rpc ExecuteUnary (CustomData) returns (ComplexMessage);
+  rpc ExecuteClientStream (stream CustomData) returns (ComplexMessage);
+  rpc ExecuteServerStream (CustomData) returns (stream ComplexMessage);
+  rpc ExecuteBidiStream (stream CustomData) returns (stream ComplexMessage);
+}

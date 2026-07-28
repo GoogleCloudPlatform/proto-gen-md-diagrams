@@ -39,8 +39,9 @@ func (rv *RpcVisitor) CanVisit(line *Line) bool {
 func ParseInArgs(values []string, rpc *Rpc) {
 	inArgs := strings.Split(values[2], Comma)
 	for _, i := range inArgs {
+		i = strings.TrimSpace(i)
 		if strings.HasPrefix(i, "stream") {
-			rpc.AddInputParameter(NewParameter(true, strings.TrimSpace(i[strings.Index(i, Space):])))
+			rpc.AddInputParameter(NewParameter(true, strings.TrimSpace(strings.TrimPrefix(i, "stream"))))
 		} else {
 			rpc.AddInputParameter(NewParameter(false, strings.TrimSpace(i)))
 		}
@@ -50,8 +51,9 @@ func ParseInArgs(values []string, rpc *Rpc) {
 func ParseReturnArgs(values []string, rpc *Rpc) {
 	returnArgs := strings.Split(values[3], Comma)
 	for _, i := range returnArgs {
+		i = strings.TrimSpace(i)
 		if strings.HasPrefix(i, "stream") {
-			rpc.AddReturnParameter(NewParameter(true, strings.TrimSpace(i[strings.Index(i, Space):])))
+			rpc.AddReturnParameter(NewParameter(true, strings.TrimSpace(strings.TrimPrefix(i, "stream"))))
 		} else {
 			rpc.AddReturnParameter(NewParameter(false, strings.TrimSpace(i)))
 		}
@@ -66,28 +68,30 @@ func (rv *RpcVisitor) Visit(scanner Scanner, in *Line, namespace string) interfa
 	ParseInArgs(values, out)
 	ParseReturnArgs(values, out)
 
-	for scanner.Scan() {
-		line := scanner.ReadLine()
-		if strings.HasPrefix(line.Syntax, "option") {
-			optionName := line.Syntax[strings.Index(line.Syntax, "(")+1 : strings.Index(line.Syntax, ")")]
-			optionBody := ""
-			for scanner.Scan() {
-				oBody := scanner.ReadLine()
-				optionBody += oBody.Syntax
-				if line.Token == Semicolon {
-					break
+	if in.Token == OpenBrace || strings.Contains(in.Syntax, OpenBrace) {
+		for scanner.Scan() {
+			line := scanner.ReadLine()
+			if strings.HasPrefix(line.Syntax, "option") {
+				optionName := line.Syntax[strings.Index(line.Syntax, "(")+1 : strings.Index(line.Syntax, ")")]
+				optionBody := ""
+				for scanner.Scan() {
+					oBody := scanner.ReadLine()
+					optionBody += oBody.Syntax
+					if line.Token == Semicolon {
+						break
+					}
+				}
+				if len(strings.TrimSpace(optionBody)) > 0 {
+					out.AddRpcOption(NewRpcOption(
+						Join(Period, namespace, out.Name),
+						optionName,
+						"",
+						optionBody))
 				}
 			}
-			if len(strings.TrimSpace(optionBody)) > 0 {
-				out.AddRpcOption(NewRpcOption(
-					Join(Period, namespace, out.Name),
-					optionName,
-					"",
-					optionBody))
+			if line.Token == CloseBrace || strings.Contains(line.Syntax, CloseBrace) {
+				break
 			}
-		}
-		if line.Token == CloseBrace {
-			break
 		}
 	}
 	return out

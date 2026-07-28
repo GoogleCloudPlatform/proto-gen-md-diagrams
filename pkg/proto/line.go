@@ -31,9 +31,20 @@ func NewLine(in string) *Line {
 		// Handle single comments
 		line.Comment = Comment(strings.TrimSpace(in[strings.Index(in, InlineCommentPrefix)+len(InlineCommentPrefix):]))
 		line.Token = InlineCommentPrefix
-	} else if strings.HasPrefix(in, MultiLineCommentInitiator) {
+	} else if isBlockCommentStart(in) {
 		// Handle Multiline Comments
-		line.Comment = Comment(strings.TrimSpace(in[strings.Index(in, MultiLineCommentInitiator)+len(MultiLineCommentInitiator) : len(in)-len(MultilineCommentTerminator)]))
+		commentStr := in
+		if strings.HasPrefix(commentStr, MultiLineCommentInitiator) {
+			commentStr = commentStr[len(MultiLineCommentInitiator):]
+		} else if strings.HasPrefix(commentStr, "/") {
+			commentStr = commentStr[1:]
+		}
+		if strings.HasSuffix(commentStr, MultilineCommentTerminator) {
+			commentStr = commentStr[:len(commentStr)-len(MultilineCommentTerminator)]
+		} else if strings.HasSuffix(commentStr, "/") {
+			commentStr = commentStr[:len(commentStr)-1]
+		}
+		line.Comment = Comment(strings.TrimSpace(commentStr))
 		line.Token = MultiLineCommentInitiator
 	} else if strings.Contains(in, Semicolon) {
 		// Handle Syntax Stings
@@ -49,7 +60,7 @@ func NewLine(in string) *Line {
 		line.Token = CloseBrace
 	}
 	// Add Inline Comments
-	if !strings.HasPrefix(in, InlineCommentPrefix) && line.Token != MultiLineCommentInitiator && strings.Contains(in, InlineCommentPrefix) {
+	if !strings.HasPrefix(in, InlineCommentPrefix) && !isBlockCommentStart(in) && strings.Contains(in, InlineCommentPrefix) {
 		line.Comment = Comment(Space + strings.TrimSpace(in[strings.Index(in, InlineCommentPrefix)+len(InlineCommentPrefix):]))
 	}
 	line.Comment = line.Comment.TrimSpace()

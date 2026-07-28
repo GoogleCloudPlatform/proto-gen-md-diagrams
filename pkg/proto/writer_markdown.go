@@ -79,14 +79,24 @@ func MessageToMarkdown(message *Message, wc *WriterConfig) (body string, diagram
 	})
 
 	for _, a := range message.Attributes {
-		label := ""
+		labels := make([]string, 0)
 		if a.Map {
-			label = "Map"
+			labels = append(labels, "Map")
 		} else if a.Repeated {
-			label = "Repeated"
+			labels = append(labels, "Repeated")
 		} else if a.Optional {
-			label = "Optional"
+			labels = append(labels, "Optional")
+		} else if a.Oneof {
+			if a.OneofGroup != "" {
+				labels = append(labels, fmt.Sprintf("Oneof (%s)", a.OneofGroup))
+			} else {
+				labels = append(labels, "Oneof")
+			}
 		}
+		if a.IsDeprecated() {
+			labels = append(labels, "Deprecated")
+		}
+		label := strings.Join(labels, ", ")
 		if wc.pureMarkdown {
 			attributeTable.Insert(fmt.Sprintf("`%s`", a.Name), strconv.Itoa(a.Ordinal), fmt.Sprintf("`%s`", strings.Join(a.Kind, Comma)), label, a.Comment.ToMarkdownText(false))
 		} else {
@@ -206,6 +216,9 @@ const footer = `
 
 func PackageToMarkDown(p *Package, wc *WriterConfig) string {
 	out := ""
+	if wc.visualize && (len(p.Messages) > 0 || len(p.Enums) > 0 || len(p.Services) > 0) {
+		out += ToMermaid(p.Name, p) + "\n\n"
+	}
 	if len(p.Services) > 0 {
 		for _, s := range p.Services {
 			out += ServiceToMarkdown(s, wc)

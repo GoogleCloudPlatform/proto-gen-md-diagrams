@@ -17,6 +17,8 @@
 package proto
 
 import (
+	"bufio"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -136,4 +138,138 @@ func TestMessageVisitor_Visit(t *testing.T) {
 			assert.Equalf(t, tt.want, mv.Visit(tt.args.scanner, tt.args.in, tt.args.namespace), "Visit(%v, %v, %v)", tt.args.scanner, tt.args.in, tt.args.namespace)
 		})
 	}
+}
+
+func TestMessageToMermaid_CancelDetailsExt(t *testing.T) {
+	input := `message CancelDetailsExt {
+/* XY id /
+string orderId = 1;
+/ Order cancellation code /
+int32 code = 2;
+/*
+
+comment
+description more
+again more description
+/
+string percentage = 3;
+/ Ticket id of ticket for cancellation /
+string ticketId = 4;
+/ Signature of ticket for cancellation */
+string signature = 5;
+}`
+
+	lines := ReadRunesToArray(strings.NewReader(input))
+	contents := strings.Join(lines, "\n")
+	scanner := bufio.NewScanner(strings.NewReader(contents))
+	scanner.Split(bufio.ScanLines)
+	pScanner := &ProtobufFileScanner{scanner: scanner}
+
+	assert.True(t, pScanner.Scan())
+	in := pScanner.ReadLine()
+
+	mv := &MessageVisitor{}
+	msg := mv.Visit(pScanner, in, "test").(*Message)
+
+	mermaid := MessageToMermaid(msg)
+	expectedMermaid := `
+%% 
+
+class CancelDetailsExt {
+  + string orderId
+  + int32 code
+  + string percentage
+  + string ticketId
+  + string signature
+}
+`
+	assert.Equal(t, expectedMermaid, mermaid)
+}
+
+func TestMessageVisitor_CommentWithSemicolon(t *testing.T) {
+	input := `message Example {
+  // This comment is ok
+  int32 a = 1;
+  // This comment have a semicolon: text;text
+  int32 b = 2;
+}`
+
+	lines := ReadRunesToArray(strings.NewReader(input))
+	contents := strings.Join(lines, "\n")
+	scanner := bufio.NewScanner(strings.NewReader(contents))
+	scanner.Split(bufio.ScanLines)
+	pScanner := &ProtobufFileScanner{scanner: scanner}
+
+	assert.True(t, pScanner.Scan())
+	in := pScanner.ReadLine()
+
+	mv := &MessageVisitor{}
+	msg := mv.Visit(pScanner, in, "md.test").(*Message)
+
+	assert.Equal(t, "Example", msg.Name)
+	assert.Equal(t, 2, len(msg.Attributes))
+	assert.Equal(t, "a", msg.Attributes[0].Name)
+	assert.Equal(t, "This comment is ok", string(msg.Attributes[0].Comment))
+	assert.Equal(t, "b", msg.Attributes[1].Name)
+	assert.Equal(t, "This comment have a semicolon: text;text", string(msg.Attributes[1].Comment))
+}
+
+func TestMessageVisitor_Issue11_MultipleEnums(t *testing.T) {
+	input := `message MessageA {
+  enum ENUM_A {
+    ENUM_A_UNSPECIFIED = 0;
+    ENUM_A_1 = 1;
+    ENUM_A_2 = 2;
+  }
+  ENUM_A enum_a = 1;
+  enum ENUM_B {
+    ENUM_B_UNSPECIFIED = 0;
+    ENUM_B_1 = 1;
+    ENUM_B_2 = 2;
+  }
+  ENUM_B enum_b = 2;
+}`
+
+	lines := ReadRunesToArray(strings.NewReader(input))
+	contents := strings.Join(lines, "\n")
+	scanner := bufio.NewScanner(strings.NewReader(contents))
+	scanner.Split(bufio.ScanLines)
+	pScanner := &ProtobufFileScanner{scanner: scanner}
+
+	assert.True(t, pScanner.Scan())
+	in := pScanner.ReadLine()
+
+	mv := &MessageVisitor{}
+	msg := mv.Visit(pScanner, in, "foo").(*Message)
+
+	mermaid := MessageToMermaid(msg)
+	assert.NotContains(t, mermaid, "}MessageA")
+	assert.Contains(t, mermaid, "}\nMessageA --o `ENUM_B`")
+}
+
+func TestMessageVisitor_Issue11_CustomOptionBlock(t *testing.T) {
+	input := `message MessageC {
+  option (foo.custom) = {
+    boo: true
+  };
+
+  string a = 1;
+}`
+
+	lines := ReadRunesToArray(strings.NewReader(input))
+	contents := strings.Join(lines, "\n")
+	scanner := bufio.NewScanner(strings.NewReader(contents))
+	scanner.Split(bufio.ScanLines)
+	pScanner := &ProtobufFileScanner{scanner: scanner}
+
+	assert.True(t, pScanner.Scan())
+	in := pScanner.ReadLine()
+
+	mv := &MessageVisitor{}
+	msg := mv.Visit(pScanner, in, "foo").(*Message)
+
+	assert.Equal(t, "MessageC", msg.Name)
+	assert.Equal(t, 1, len(msg.Attributes))
+	assert.Equal(t, "a", msg.Attributes[0].Name)
+	assert.Equal(t, []string{"string"}, msg.Attributes[0].Kind)
 }

@@ -62,6 +62,9 @@ func TestNewLine(t *testing.T) {
 	}{
 		{name: "Test Comment", args: args{in: "// Comment"}, want: &Line{Token: "//", Comment: "Comment"}},
 		{name: "Test Multiline Comment", args: args{in: "/* Comment */"}, want: &Line{Token: "/*", Comment: "Comment"}},
+		{name: "Test Multiline Comment Slash Suffix", args: args{in: "/* Comment /"}, want: &Line{Token: "/*", Comment: "Comment"}},
+		{name: "Test Multiline Comment Slash Prefix", args: args{in: "/ Comment /"}, want: &Line{Token: "/*", Comment: "Comment"}},
+		{name: "Test Multiline Comment Slash Prefix Asterisk Suffix", args: args{in: "/ Comment */"}, want: &Line{Token: "/*", Comment: "Comment"}},
 		{name: "Test Open Brace", args: args{in: "message AddressType { // Comment"}, want: &Line{Token: "{", Syntax: "message AddressType", Comment: "Comment"}},
 		{name: "Test Semicolon", args: args{in: "string name = 1; // Comment"}, want: &Line{Token: ";", Syntax: "string name = 1", Comment: "Comment"}},
 		{name: "Test Close Brace", args: args{in: "} // Comment"}, want: &Line{Token: "}", Syntax: "", Comment: "Comment"}},

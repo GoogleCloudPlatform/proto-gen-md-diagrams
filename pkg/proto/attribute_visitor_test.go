@@ -85,9 +85,9 @@ func Test_attributeVisitor_Visit(t *testing.T) {
 	}{
 		{
 			name: "Test Visit", args: args{in0: testScanner,
-			in:        &Line{Syntax: "string line1 = 1", Token: ";", Comment: "Test"},
-			namespace: "test",
-		},
+				in:        &Line{Syntax: "string line1 = 1", Token: ";", Comment: "Test"},
+				namespace: "test",
+			},
 			want: &Attribute{
 				Qualified: &Qualified{
 					Qualifier: "test",
