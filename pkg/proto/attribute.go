@@ -49,6 +49,18 @@ func (a *Attribute) IsDeprecated() bool {
 	return false
 }
 
+// GetJSONName returns the json_name annotation value if present.
+func (a *Attribute) GetJSONName() string {
+	for _, ann := range a.Annotations {
+		if strings.EqualFold(ann.Name, "json_name") {
+			val := fmt.Sprint(ann.Value)
+			val = strings.Trim(val, "'\"")
+			return val
+		}
+	}
+	return ""
+}
+
 // ToMermaid implements a Mermaid Syntax per Attribute
 func (a *Attribute) ToMermaid() string {
 	res := ""
@@ -66,6 +78,9 @@ func (a *Attribute) ToMermaid() string {
 		}
 	} else {
 		res = Join(Space, "+", a.Kind[0], a.Name)
+	}
+	if jsonName := a.GetJSONName(); jsonName != "" {
+		res += fmt.Sprintf(" (→ %s)", jsonName)
 	}
 	if a.IsDeprecated() {
 		res += " [deprecated]"

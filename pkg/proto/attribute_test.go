@@ -84,6 +84,10 @@ func TestAttribute_ToMermaid(t *testing.T) {
 			Qualifier: "test.qualifier",
 			Name:      "OldField",
 		}, Kind: []string{"string"}, Ordinal: 3, Annotations: []*Annotation{{Name: "deprecated", Value: "true"}}}, want: "+ string OldField [deprecated]"},
+		{name: "JSON Name Field", fields: fields{Qualified: &Qualified{
+			Qualifier: "test.qualifier",
+			Name:      "longitude_degrees",
+		}, Kind: []string{"int32"}, Ordinal: 4, Annotations: []*Annotation{{Name: "json_name", Value: "'lng_d'"}}}, want: "+ int32 longitude_degrees (→ lng_d)"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
