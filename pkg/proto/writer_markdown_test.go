@@ -367,6 +367,43 @@ func TestMessageToMarkdown(t *testing.T) {
 
 
 `, wantDiagram: "\n### Message Diagram\n\n```mermaid\nclassDiagram\ndirection LR\n\n%% \n\nclass Message {\n  + string Name\n}\n\n```"},
+		{name: "Message with JSON Name", args: args{
+			message: &Message{
+				Qualified: &Qualified{
+					Qualifier: "test.Service.Message",
+					Name:      "Message",
+					Comment:   "",
+				},
+				Attributes: []*Attribute{{
+					Qualified: &Qualified{
+						Qualifier: "test.Service.Message.user_id",
+						Name:      "user_id",
+						Comment:   "",
+					},
+					Repeated:    false,
+					Map:         false,
+					Kind:        []string{"string"},
+					Ordinal:     1,
+					Annotations: []*Annotation{{Name: "json_name", Value: "'userId'"}},
+				}},
+				Messages: []*Message{},
+				Enums:    []*Enum{},
+				Reserved: []*Reserved{},
+			},
+			wc: &WriterConfig{
+				visualize: true,
+			},
+		}, wantBody: `## Message: Message
+<div style="font-size: 12px; margin-top: -10px;" class="fqn">FQN: test.Service.Message</div>
+
+<div class="comment"><span></span><br/></div>
+
+| Field   | Ordinal | Type   | Label        | Description |
+|---------|---------|--------|--------------|-------------|
+| user_id | 1       | string | JSON: userId |             |
+
+
+`, wantDiagram: "\n### Message Diagram\n\n```mermaid\nclassDiagram\ndirection LR\n\n%% \n\nclass Message {\n  + string user_id (→ userId)\n}\n\n```"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

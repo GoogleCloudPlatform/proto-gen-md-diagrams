@@ -142,34 +142,42 @@ message PhysicalLocation {
 }
 ```
 
-## Markdown Output
+## Supported Output Formats
 
-### Diagram
+`proto-gen-md-diagrams` supports two markdown output formats, both of which include Mermaid class diagrams when visualization is enabled (`-v=true`, default):
+
+1. **Default Mode (HTML-Enhanced Markdown)**: Uses styled HTML elements (`<div class="fqn">`, `<div class="comment">`) for metadata styling and clean table displays.
+2. **Pure Markdown Mode (`-md`)**: Produces strict GitHub-Flavored Markdown using backtick code formatting (`` `field` ``) and bold text without HTML tags.
+
+### Output Mermaid Diagram
+
+The generator emits a Mermaid class diagram visualizing message types, nested messages, enums, relationships, field types, and optional custom JSON field aliases (`json_name`):
 
 ```mermaid
 classDiagram
 direction LR
 
 %% A physical location that can be described with either an address or a set of geo coordinates.
+
 class PhysicalLocation {
-  + Address address
-  + double altitude_meters
   + google.protobuf.Timestamp created
-  + int32 latitude_degrees
-  + string latitude_direction_code
-  + int32 latitude_minutes
-  + int32 latitude_seconds
-  + int32 longitude_degrees
-  + int32 longitude_minutes
-  + int32 longitude_seconds
-  + Map<string,  string> meta
-  + List<string> names
+  + Address address
+  + int32 longitude_degrees (→ lng_d)
+  + int32 longitude_minutes (→ lng_m)
+  + int32 longitude_seconds (→ lng_s)
+  + int32 latitude_degrees (→ lat_d)
+  + int32 latitude_minutes (→ lat_m)
+  + int32 latitude_seconds (→ lat_s)
+  + string latitude_direction_code (→ lat_dir_code)
+  + double altitude_meters (→ alt_m)
+  + Map~string,  string~ meta
+  + List~string~ names (→ names)
 }
 PhysicalLocation --> `Address`
-PhysicalLocation --> `google.protobuf.Timestamp`
 PhysicalLocation --o `Address`
 
 %% A postal address for the physical location.
+
 class Address {
   + string line1
   + string line2
@@ -182,6 +190,7 @@ class Address {
 Address --> `AddressType`
 Address --o `AddressType`
 %% Address type is used to identify the type of address.
+
 class AddressType{
   <<enumeration>>
   RESIDENTIAL
@@ -189,24 +198,47 @@ class AddressType{
 }
 ```
 
-## Description
+### Format Examples
+
+#### 1. Default Mode Output (HTML-Enhanced)
 
 <div style="font-size: 12px; margin-top: -10px;" class="fqn">FQN: test.location.PhysicalLocation</div>
 
+<div class="comment"><span>A physical location that can be described with either an address or a set of geo coordinates.</span><br/></div>
+
+| Field                   | Ordinal | Type                      | Label                 | Description                           |
+|-------------------------|---------|---------------------------|-----------------------|---------------------------------------|
+| created                 | 1       | google.protobuf.Timestamp |                       | The timestamp the record was created  |
+| address                 | 2       | Address                   |                       | The mailing address of the location   |
+| longitude_degrees       | 3       | int32                     | JSON: lng_d           | Longitude degrees                     |
+| longitude_minutes       | 4       | int32                     | JSON: lng_m           | Longitude Minutes                     |
+| longitude_seconds       | 5       | int32                     | JSON: lng_s           | Longitude Seconds                     |
+| latitude_degrees        | 6       | int32                     | JSON: lat_d           | Longitude Degrees                     |
+| latitude_minutes        | 7       | int32                     | JSON: lat_m           | Latitude Minutes                      |
+| latitude_seconds        | 8       | int32                     | JSON: lat_s           | Latitude Seconds                      |
+| latitude_direction_code | 9       | string                    | JSON: lat_dir_code    | Latitude Direction Code               |
+| altitude_meters         | 10      | double                    | JSON: alt_m           | Altitude in Meters                    |
+| meta                    | 11      | string, string            | Map                   | Additional Meta Data                  |
+| names                   | 12      | string                    | Repeated, JSON: names | Names for the location                |
+
+#### 2. Pure Markdown Mode Output (`-md`)
+
+**FQN**: test.location.PhysicalLocation
+
 A physical location that can be described with either an address or a set of geo coordinates.
 
-| Field                   | Ordinal | Type                      | Label    | Description                          |
-|-------------------------|---------|---------------------------|----------|--------------------------------------|
-| address                 | 2       | Address                   |          | The mailing address of the location  |
-| altitude_meters         | 10      | double                    |          | Altitude in Meters                   |
-| created                 | 1       | google.protobuf.Timestamp |          | The timestamp the record was created |
-| latitude_degrees        | 6       | int32                     |          | Longitude Degrees                    |
-| latitude_direction_code | 9       | string                    |          | Latitude Direction Code              |
-| latitude_minutes        | 7       | int32                     |          | Latitude Minutes                     |
-| latitude_seconds        | 8       | int32                     |          | Latitude Seconds                     |
-| longitude_degrees       | 3       | int32                     |          | Longitude degrees                    |
-| longitude_minutes       | 4       | int32                     |          | Longitude Minutes                    |
-| longitude_seconds       | 5       | int32                     |          | Longitude Seconds                    |
-| meta                    | 11      | string, string            | Map      | Additional Meta Data                 |
-| names                   | 12      | string                    | Repeated | Names for the location               |
+| Field                     | Ordinal | Type                        | Label                 | Description                           |
+|---------------------------|---------|-----------------------------|-----------------------|---------------------------------------|
+| `created`                 | 1       | `google.protobuf.Timestamp` |                       | The timestamp the record was created  |
+| `address`                 | 2       | `Address`                   |                       | The mailing address of the location   |
+| `longitude_degrees`       | 3       | `int32`                     | JSON: lng_d           | Longitude degrees                     |
+| `longitude_minutes`       | 4       | `int32`                     | JSON: lng_m           | Longitude Minutes                     |
+| `longitude_seconds`       | 5       | `int32`                     | JSON: lng_s           | Longitude Seconds                     |
+| `latitude_degrees`        | 6       | `int32`                     | JSON: lat_d           | Longitude Degrees                     |
+| `latitude_minutes`        | 7       | `int32`                     | JSON: lat_m           | Latitude Minutes                      |
+| `latitude_seconds`        | 8       | `int32`                     | JSON: lat_s           | Latitude Seconds                      |
+| `latitude_direction_code` | 9       | `string`                    | JSON: lat_dir_code    | Latitude Direction Code               |
+| `altitude_meters`         | 10      | `double`                    | JSON: alt_m           | Altitude in Meters                    |
+| `meta`                    | 11      | `string, string`            | Map                   | Additional Meta Data                  |
+| `names`                   | 12      | `string`                    | Repeated, JSON: names | Names for the location                |
 

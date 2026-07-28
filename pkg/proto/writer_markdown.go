@@ -96,6 +96,9 @@ func MessageToMarkdown(message *Message, wc *WriterConfig) (body string, diagram
 		if a.IsDeprecated() {
 			labels = append(labels, "Deprecated")
 		}
+		if jsonName := a.GetJSONName(); jsonName != "" {
+			labels = append(labels, fmt.Sprintf("JSON: %s", jsonName))
+		}
 		label := strings.Join(labels, ", ")
 		if wc.pureMarkdown {
 			attributeTable.Insert(fmt.Sprintf("`%s`", a.Name), strconv.Itoa(a.Ordinal), fmt.Sprintf("`%s`", strings.Join(a.Kind, Comma)), label, a.Comment.ToMarkdownText(false))

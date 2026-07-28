@@ -20,31 +20,30 @@
 
 
 
-
-### PhysicalLocation Diagram
+### test.location Diagram
 
 ```mermaid
 classDiagram
 direction LR
+%% Mermaid Diagram for package: test.location
 
 %% A physical location that can be described with either an address or a set of geo coordinates.
 
 class PhysicalLocation {
-  + Address address
-  + double altitude_meters
   + google.protobuf.Timestamp created
-  + int32 latitude_degrees
-  + string latitude_direction_code
-  + int32 latitude_minutes
-  + int32 latitude_seconds
-  + int32 longitude_degrees
-  + int32 longitude_minutes
-  + int32 longitude_seconds
-  + Map<string,  string> meta
-  + List<string> names
+  + Address address
+  + int32 longitude_degrees (→ lng_d)
+  + int32 longitude_minutes (→ lng_m)
+  + int32 longitude_seconds (→ lng_s)
+  + int32 latitude_degrees (→ lat_d)
+  + int32 latitude_minutes (→ lat_m)
+  + int32 latitude_seconds (→ lat_s)
+  + string latitude_direction_code (→ lat_dir_code)
+  + double altitude_meters (→ alt_m)
+  + Map~string,  string~ meta
+  + List~string~ names (→ names)
 }
 PhysicalLocation --> `Address`
-PhysicalLocation --> `google.protobuf.Timestamp`
 PhysicalLocation --o `Address`
 
 %% A postal address for the physical location.
@@ -67,6 +66,66 @@ class AddressType{
   RESIDENTIAL
   BUSINESS
 }
+
+%% 
+
+class PhoneNumber {
+  + string country_code
+  + string area_code
+  + string prefix
+  + string suffix
+  + string extension
+}
+
+```
+
+
+### PhysicalLocation Diagram
+
+```mermaid
+classDiagram
+direction LR
+
+%% A physical location that can be described with either an address or a set of geo coordinates.
+
+class PhysicalLocation {
+  + google.protobuf.Timestamp created
+  + Address address
+  + int32 longitude_degrees (→ lng_d)
+  + int32 longitude_minutes (→ lng_m)
+  + int32 longitude_seconds (→ lng_s)
+  + int32 latitude_degrees (→ lat_d)
+  + int32 latitude_minutes (→ lat_m)
+  + int32 latitude_seconds (→ lat_s)
+  + string latitude_direction_code (→ lat_dir_code)
+  + double altitude_meters (→ alt_m)
+  + Map~string,  string~ meta
+  + List~string~ names (→ names)
+}
+PhysicalLocation --> `Address`
+PhysicalLocation --o `Address`
+
+%% A postal address for the physical location.
+
+class Address {
+  + string line1
+  + string line2
+  + string line3
+  + string city
+  + string state
+  + string zipcode
+  + AddressType type
+}
+Address --> `AddressType`
+Address --o `AddressType`
+%% Address type is used to identify the type of address.
+
+class AddressType{
+  <<enumeration>>
+  RESIDENTIAL
+  BUSINESS
+}
+
 ```
 ### PhoneNumber Diagram
 
@@ -77,11 +136,11 @@ direction LR
 %% 
 
 class PhoneNumber {
-  + string area_code
   + string country_code
-  + string extension
+  + string area_code
   + string prefix
   + string suffix
+  + string extension
 }
 
 ```
@@ -91,21 +150,65 @@ class PhoneNumber {
 
 <div class="comment"><span>A physical location that can be described with either an address or a set of geo coordinates.</span><br/></div>
 
-| Field                   | Ordinal | Type                      | Label    | Description                           |
-|-------------------------|---------|---------------------------|----------|---------------------------------------|
-| address                 | 2       | Address                   |          | The mailing address of the location   |
-| altitude_meters         | 10      | double                    |          | Altitude in Meters                    |
-| created                 | 1       | google.protobuf.Timestamp |          | The timestamp the record was created  |
-| latitude_degrees        | 6       | int32                     |          | Longitude Degrees                     |
-| latitude_direction_code | 9       | string                    |          | Latitude Direction Code               |
-| latitude_minutes        | 7       | int32                     |          | Latitude Minutes                      |
-| latitude_seconds        | 8       | int32                     |          | Latitude Seconds                      |
-| longitude_degrees       | 3       | int32                     |          | Longitude degrees                     |
-| longitude_minutes       | 4       | int32                     |          | Longitude Minutes                     |
-| longitude_seconds       | 5       | int32                     |          | Longitude Seconds                     |
-| meta                    | 11      | string, string            | Map      | Additional Meta Data                  |
-| names                   | 12      | string                    | Repeated | Names for the location                |
+| Field                   | Ordinal | Type                      | Label                 | Description                           |
+|-------------------------|---------|---------------------------|-----------------------|---------------------------------------|
+| created                 | 1       | google.protobuf.Timestamp |                       | The timestamp the record was created  |
+| address                 | 2       | Address                   |                       | The mailing address of the location   |
+| longitude_degrees       | 3       | int32                     | JSON: lng_d           | Longitude degrees                     |
+| longitude_minutes       | 4       | int32                     | JSON: lng_m           | Longitude Minutes                     |
+| longitude_seconds       | 5       | int32                     | JSON: lng_s           | Longitude Seconds                     |
+| latitude_degrees        | 6       | int32                     | JSON: lat_d           | Longitude Degrees                     |
+| latitude_minutes        | 7       | int32                     | JSON: lat_m           | Latitude Minutes                      |
+| latitude_seconds        | 8       | int32                     | JSON: lat_s           | Latitude Seconds                      |
+| latitude_direction_code | 9       | string                    | JSON: lat_dir_code    | Latitude Direction Code               |
+| altitude_meters         | 10      | double                    | JSON: alt_m           | Altitude in Meters                    |
+| meta                    | 11      | string, string            | Map                   | Additional Meta Data                  |
+| names                   | 12      | string                    | Repeated, JSON: names | Names for the location                |
 
+
+
+### Address Diagram
+
+```mermaid
+classDiagram
+direction LR
+
+%% A postal address for the physical location.
+
+class Address {
+  + string line1
+  + string line2
+  + string line3
+  + string city
+  + string state
+  + string zipcode
+  + AddressType type
+}
+Address --> `AddressType`
+Address --o `AddressType`
+%% Address type is used to identify the type of address.
+
+class AddressType{
+  <<enumeration>>
+  RESIDENTIAL
+  BUSINESS
+}
+
+```
+### AddressType Diagram
+
+```mermaid
+classDiagram
+direction LR
+%% Address type is used to identify the type of address.
+
+class AddressType{
+  <<enumeration>>
+  RESIDENTIAL
+  BUSINESS
+}
+
+```
 
 ## Message: Address
 <div style="font-size: 12px; margin-top: -10px;" class="fqn">FQN: test.location.PhysicalLocation.Address</div>
@@ -114,13 +217,13 @@ class PhoneNumber {
 
 | Field   | Ordinal | Type        | Label | Description                 |
 |---------|---------|-------------|-------|-----------------------------|
-| city    | 4       | string      |       | The city or township        |
 | line1   | 1       | string      |       | First line of the address   |
 | line2   | 2       | string      |       | Second line of the address  |
 | line3   | 3       | string      |       | Third line of the address   |
+| city    | 4       | string      |       | The city or township        |
 | state   | 5       | string      |       | The state or province       |
-| type    | 7       | AddressType |       | The type of address         |
 | zipcode | 6       | string      |       | The postal code             |
+| type    | 7       | AddressType |       | The type of address         |
 
 
 ## Enum: AddressType
@@ -134,6 +237,8 @@ class PhoneNumber {
 | BUSINESS    | 1       | A business address     |
 
 
+
+
 ## Message: PhoneNumber
 <div style="font-size: 12px; margin-top: -10px;" class="fqn">FQN: test.location.PhoneNumber</div>
 
@@ -141,11 +246,13 @@ class PhoneNumber {
 
 | Field        | Ordinal | Type   | Label | Description |
 |--------------|---------|--------|-------|-------------|
-| area_code    | 2       | string |       |             |
 | country_code | 1       | string |       |             |
-| extension    | 5       | string |       |             |
+| area_code    | 2       | string |       |             |
 | prefix       | 3       | string |       |             |
 | suffix       | 4       | string |       |             |
+| extension    | 5       | string |       |             |
+
+
 
 
 
