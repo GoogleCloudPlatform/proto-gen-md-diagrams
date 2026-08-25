@@ -42,36 +42,37 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Bazel Setup
+        uses: bazelbuild/setup-bazelisk@v3
+
+      - name: Mount bazel cache
+        uses: actions/cache@v4
+        with:
+          path: "/home/runner/.cache/bazel"
+          key: bazel
+
       - name: Create Release Directory
         run: mkdir release
 
       - name: Build and Package for Linux (x86_64)
-        env:
-          GITHUB_TOKEN: ${{ secrets.RELEASE_KEY }}
         run: |
-          bazel build //:main_zip --config=on_linux
-          mv bazel-bin/dist/archive.zip release/proto-gen-md-diagrams-linux-x86_64.zip
+          bazel build //:main_linux_amd64_zip
+          cp bazel-bin/dist/proto-gen-md-diagrams-linux-x86_64.zip release/
 
       - name: Build and Package for macOS (x86_64)
-        env:
-          GITHUB_TOKEN: ${{ secrets.RELEASE_KEY }}
         run: |
-          bazel build //:main_zip --config=on_osx_x64
-          mv bazel-bin/dist/archive.zip release/proto-gen-md-diagrams-osx-x86_64.zip
+          bazel build //:main_darwin_amd64_zip
+          cp bazel-bin/dist/proto-gen-md-diagrams-osx-x86_64.zip release/
 
       - name: Build and Package for macOS (ARM64)
-        env:
-          GITHUB_TOKEN: ${{ secrets.RELEASE_KEY }}
         run: |
-          bazel build //:main_zip --config=on_osx_arm64
-          mv bazel-bin/dist/archive.zip release/proto-gen-md-diagrams-osx-arm64.zip
+          bazel build //:main_darwin_arm64_zip
+          cp bazel-bin/dist/proto-gen-md-diagrams-osx-arm64.zip release/
 
       - name: Build and Package for Windows (x86_64)
-        env:
-          GITHUB_TOKEN: ${{ secrets.RELEASE_KEY }}
         run: |
-          bazel build //:main_zip --config=on_windows
-          mv bazel-bin/dist/archive.zip release/proto-gen-md-diagrams-win-x86_64.zip
+          bazel build //:main_windows_amd64_zip
+          cp bazel-bin/dist/proto-gen-md-diagrams-win-x86_64.zip release/
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1

@@ -37,6 +37,103 @@ go_binary(
     visibility = ["//visibility:public"],
 )
 
+# Cross-compiled binaries for supported release platforms
+go_binary(
+    name = "main_linux_amd64",
+    basename = "proto-gen-md-diagrams",
+    embed = [":main_lib"],
+    goarch = "amd64",
+    goos = "linux",
+    visibility = ["//visibility:public"],
+)
+
+go_binary(
+    name = "main_darwin_amd64",
+    basename = "proto-gen-md-diagrams",
+    embed = [":main_lib"],
+    goarch = "amd64",
+    goos = "darwin",
+    visibility = ["//visibility:public"],
+)
+
+go_binary(
+    name = "main_darwin_arm64",
+    basename = "proto-gen-md-diagrams",
+    embed = [":main_lib"],
+    goarch = "arm64",
+    goos = "darwin",
+    visibility = ["//visibility:public"],
+)
+
+go_binary(
+    name = "main_windows_amd64",
+    basename = "proto-gen-md-diagrams",
+    embed = [":main_lib"],
+    goarch = "amd64",
+    goos = "windows",
+    visibility = ["//visibility:public"],
+)
+
+# Release zip archives for each platform
+pkg_zip(
+    name = "main_linux_amd64_zip",
+    srcs = [
+        "LICENSE",
+        "NOTICE",
+        "README.md",
+        ":main_linux_amd64",
+    ],
+    out = "dist/proto-gen-md-diagrams-linux-x86_64.zip",
+    visibility = ["//visibility:public"],
+)
+
+pkg_zip(
+    name = "main_darwin_amd64_zip",
+    srcs = [
+        "LICENSE",
+        "NOTICE",
+        "README.md",
+        ":main_darwin_amd64",
+    ],
+    out = "dist/proto-gen-md-diagrams-osx-x86_64.zip",
+    visibility = ["//visibility:public"],
+)
+
+pkg_zip(
+    name = "main_darwin_arm64_zip",
+    srcs = [
+        "LICENSE",
+        "NOTICE",
+        "README.md",
+        ":main_darwin_arm64",
+    ],
+    out = "dist/proto-gen-md-diagrams-osx-arm64.zip",
+    visibility = ["//visibility:public"],
+)
+
+pkg_zip(
+    name = "main_windows_amd64_zip",
+    srcs = [
+        "LICENSE",
+        "NOTICE",
+        "README.md",
+        ":main_windows_amd64",
+    ],
+    out = "dist/proto-gen-md-diagrams-win-x86_64.zip",
+    visibility = ["//visibility:public"],
+)
+
+filegroup(
+    name = "release_zips",
+    srcs = [
+        ":main_darwin_amd64_zip",
+        ":main_darwin_arm64_zip",
+        ":main_linux_amd64_zip",
+        ":main_windows_amd64_zip",
+    ],
+    visibility = ["//visibility:public"],
+)
+
 archive_base_name = "proto-gen-md-diagrams"
 
 pkg_zip(
@@ -49,10 +146,10 @@ pkg_zip(
     ],
     out = "dist/archive.zip",
     package_file_name = select({
-        "on_linux": "{}-linux-x86_64".format(archive_base_name),
-        "on_osx_x64": "{}-osx-x86_64".format(archive_base_name),
-        "on_windows": "{}-win-x86_64".format(archive_base_name),
-        "on_osx_arm64": "{}-osx-arm64".format(archive_base_name),
+        "on_linux": "{}-linux-x86_64.zip".format(archive_base_name),
+        "on_osx_x64": "{}-osx-x86_64.zip".format(archive_base_name),
+        "on_windows": "{}-win-x86_64.zip".format(archive_base_name),
+        "on_osx_arm64": "{}-osx-arm64.zip".format(archive_base_name),
     }),
 )
 
